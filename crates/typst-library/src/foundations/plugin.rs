@@ -2,13 +2,13 @@ use std::fmt::{self, Debug, Formatter};
 use std::hash::{Hash, Hasher};
 use std::sync::{Arc, Mutex};
 
-use ecow::{eco_format, EcoString};
+use ecow::{EcoString, eco_format};
 use typst_syntax::Spanned;
 use wasmi::Memory;
 
-use crate::diag::{bail, At, SourceResult, StrResult};
+use crate::diag::{At, SourceResult, StrResult, bail};
 use crate::engine::Engine;
-use crate::foundations::{cast, func, scope, Binding, Bytes, Func, Module, Scope, Value};
+use crate::foundations::{Binding, Bytes, Func, Module, Scope, Value, cast, func, scope};
 use crate::loading::{DataSource, Load};
 
 /// Loads a WebAssembly module.
@@ -522,7 +522,7 @@ impl PluginInstance {
         let memory = self.memory();
         let mem_pages = memory.size(&self.store);
         let mem_data = memory.data(&self.store).to_vec();
-        Snapshot { mem_pages, mem_data }
+        Snapshot { mem_pages: mem_pages.try_into().unwrap(), mem_data }
     }
 
     /// Restores the instance to a snapshot.
@@ -530,10 +530,9 @@ impl PluginInstance {
     fn restore(&mut self, snapshot: &Snapshot) {
         let memory = self.memory();
         let current_size = memory.size(&self.store);
-        if current_size < snapshot.mem_pages {
-            memory
-                .grow(&mut self.store, snapshot.mem_pages - current_size)
-                .unwrap();
+        let snapshot_pages = u64::from(snapshot.mem_pages);
+        if current_size < snapshot_pages {
+            memory.grow(&mut self.store, snapshot_pages - current_size).unwrap();
         }
 
         memory.data_mut(&mut self.store)[..snapshot.mem_data.len()]

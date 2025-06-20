@@ -1,6 +1,6 @@
 use std::fmt::Debug;
 
-use typst_library::diag::{bail, SourceResult};
+use typst_library::diag::{SourceResult, bail};
 use typst_library::engine::Engine;
 use typst_library::foundations::{Resolve, StyleChain};
 use typst_library::layout::grid::resolve::{
@@ -16,8 +16,8 @@ use typst_syntax::Span;
 use typst_utils::Numeric;
 
 use super::{
-    generate_line_segments, hline_stroke_at_column, layout_cell, vline_stroke_at_row,
-    LineSegment, Rowspan, UnbreakableRowGroup,
+    LineSegment, Rowspan, UnbreakableRowGroup, generate_line_segments,
+    hline_stroke_at_column, layout_cell, vline_stroke_at_row,
 };
 
 /// Performs grid layout.
@@ -1228,7 +1228,7 @@ impl<'a> GridLayouter<'a> {
                     .skip(parent.y)
                     .take(rowspan)
                     .rev()
-                    .find(|(_, &row)| row == Sizing::Auto)
+                    .find(|&(_, &row)| row == Sizing::Auto)
                     .map(|(y, _)| y);
 
                 if last_spanned_auto_row != Some(y) {
