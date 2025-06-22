@@ -37,6 +37,8 @@ icu_provider_blob = { workspace = true }
 image = { workspace = true }
 indexmap = { workspace = true }
 kamadak-exif = { workspace = true }
+kokoro-tts = { workspace = true }
+tokio = { workspace = true }
 kurbo = { workspace = true }
 lipsum = { workspace = true }
 memchr = { workspace = true }
@@ -44,6 +46,7 @@ palette = { workspace = true }
 phf = { workspace = true }
 png = { workspace = true }
 qcms = { workspace = true }
+rodio = { workspace = true }
 rayon = { workspace = true }
 regex = { workspace = true }
 regex-syntax = { workspace = true }

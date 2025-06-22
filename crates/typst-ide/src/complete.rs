@@ -852,6 +852,7 @@ fn path_completion(func: &Func, param: &ParamInfo) -> Option<&'static [&'static 
             &["png", "jpg", "jpeg", "gif", "svg", "svgz", "webp"]
         }
         (Some("csv"), "source") => &["csv"],
+        (Some("audio"), "source") => &["mp3", "wav", "ogg", "flac"],
         (Some("plugin"), "source") => &["wasm"],
         (Some("cbor"), "source") => &["cbor"],
         (Some("json"), "source") => &["json"],

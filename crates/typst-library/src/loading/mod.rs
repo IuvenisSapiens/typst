@@ -14,6 +14,10 @@ mod toml_;
 mod xml_;
 #[path = "yaml.rs"]
 mod yaml_;
+#[path = "audio.rs"]  // 添加对 audio.rs 的引用
+mod audio_;
+#[path = "tts.rs"]
+mod tts_;
 
 use comemo::Tracked;
 use ecow::EcoString;
@@ -26,6 +30,8 @@ pub use self::read_::*;
 pub use self::toml_::*;
 pub use self::xml_::*;
 pub use self::yaml_::*;
+pub use self::audio_::*;  // 添加对 audio 模块的引用
+pub use self::tts_::*;  // 添加对 tts 模块的引用
 
 use crate::World;
 use crate::diag::{At, SourceResult};
@@ -42,6 +48,8 @@ pub(super) fn define(global: &mut Scope) {
     global.define_func::<yaml>();
     global.define_func::<cbor>();
     global.define_func::<xml>();
+    global.define_func::<audio>();  // 添加对 audio 函数的定义
+    global.define_func::<tts>();  // 添加对 tts 函数的定义
     global.reset_category();
 }
 
