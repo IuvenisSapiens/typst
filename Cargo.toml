@@ -75,8 +75,8 @@ kamadak-exif = "0.6.1"
 kokoro-tts = { git = "https://github.com/IuvenisSapiens/kokoro.git", branch = "master" }
 rodio = "0.20.1"
 tokio = { version = "1.45.1", features = ["full"] }
-krilla = { version = "0.4.0", default-features = false, features = ["raster-images", "comemo", "rayon"] }
-krilla-svg = "0.1.0"
+krilla = { git = "https://github.com/LaurenzV/krilla", rev = "20c14fe", default-features = false, features = ["raster-images", "comemo", "rayon"] }
+krilla-svg = { git = "https://github.com/LaurenzV/krilla", rev = "20c14fe" }
 kurbo = "0.11.2"
 libfuzzer-sys = "0.4.9"
 lipsum = "0.9.1"
