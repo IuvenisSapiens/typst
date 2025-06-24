@@ -189,7 +189,12 @@ impl<'a> Handler<'a> {
     fn handle(&mut self, event: &mut md::Event<'a>) -> bool {
         match event {
             // Rewrite Markdown images.
-            md::Event::Start(md::Tag::Image(_, path, _)) => {
+            md::Event::Start(md::Tag::Image {
+                link_type: _,
+                dest_url: path,
+                title: _,
+                id: _,
+            }) => {
                 *path = self.handle_image(path).into();
             }
 
@@ -203,12 +208,18 @@ impl<'a> Handler<'a> {
             }
 
             // Register HTML headings for the outline.
-            md::Event::Start(md::Tag::Heading(level, id, _)) => {
-                self.handle_heading(id, level);
+            md::Event::Start(md::Tag::Heading{ level, id, .. }) => {
+                // Use a reference to the id directly
+                let mut id_str: Option<String> = id.as_ref().map(|s| s.to_string());
+                self.handle_heading(&mut id_str, level);
+                // Update the original id if handle_heading changed it
+                if let Some(new_id) = id_str {
+                    *id = Some(md::CowStr::from(new_id));
+                }
             }
 
             // Also handle heading closings.
-            md::Event::End(md::Tag::Heading(level, _, _)) => {
+            md::Event::End(md::TagEnd::Heading(level)) => {
                 nest_heading(level, self.nesting());
             }
 
@@ -223,7 +234,7 @@ impl<'a> Handler<'a> {
             }
 
             // Rewrite links.
-            md::Event::Start(md::Tag::Link(ty, dest, _)) => {
+            md::Event::Start(md::Tag::Link{ link_type: ty, dest_url: dest, .. }) => {
                 assert!(
                     matches!(
                         ty,
@@ -261,7 +272,7 @@ impl<'a> Handler<'a> {
                 self.code = EcoString::new();
                 return false;
             }
-            md::Event::End(md::Tag::CodeBlock(md::CodeBlockKind::Fenced(_))) => {
+            md::Event::End(md::TagEnd::CodeBlock) => {
                 let Some(lang) = self.lang.take() else { return false };
                 let html = code_block(self.resolver, &lang, &self.code);
                 *event = md::Event::Html(html.raw.into());
@@ -293,7 +304,7 @@ impl<'a> Handler<'a> {
 
     fn handle_heading(
         &mut self,
-        id_slot: &mut Option<&'a str>,
+        id_slot: &mut Option<String>,
         level: &mut md::HeadingLevel,
     ) {
         nest_heading(level, self.nesting());
@@ -305,22 +316,22 @@ impl<'a> Handler<'a> {
         let default = body.map(|text| text.to_kebab_case());
         let has_id = id_slot.is_some();
 
-        let id: &'a str = match (&id_slot, default) {
+        let id: String = match (&id_slot, default) {
             (Some(id), default) => {
-                if Some(*id) == default.as_deref() {
+                if Some(id.as_str()) == default.as_deref() {
                     eprintln!("heading id #{id} was specified unnecessarily");
                 }
-                id
+                id.clone()
             }
-            (None, Some(default)) => self.ids.alloc(default).as_str(),
+            (None, Some(default)) => self.ids.alloc(default).to_string(),
             (None, None) => panic!("missing heading id {}", self.text),
         };
 
-        *id_slot = (!id.is_empty()).then_some(id);
+        *id_slot = (!id.is_empty()).then_some(id.clone());
 
         // Special case for things like "v0.3.0".
         let name = match &body {
-            _ if id.starts_with('v') && id.contains('.') => id.into(),
+            _ if id.starts_with('v') && id.contains('.') => id.clone().into(),
             Some(body) if !has_id => body.as_ref().into(),
             _ => id.to_title_case().into(),
         };
@@ -392,7 +403,7 @@ fn code_block(resolver: &dyn Resolver, lang: &str, text: &str) -> Html {
 
     if lang.is_empty() {
         let mut buf = String::from("<pre>");
-        md::escape::escape_html(&mut buf, &display).unwrap();
+        pulldown_cmark_escape::escape_html(&mut buf, &display).unwrap();
         buf.push_str("</pre>");
         return Html::new(buf);
     } else if !matches!(lang, "example" | "typ" | "preview") {
@@ -503,5 +514,9 @@ impl World for DocWorld {
 
     fn today(&self, _: Option<i64>) -> Option<Datetime> {
         Some(Datetime::from_ymd(1970, 1, 1).unwrap())
+    }
+
+    fn now(&self, _: Option<i64>) -> Option<Datetime> {
+        Some(Datetime::from_ymd_hms(1970, 1, 1, 0, 0, 0).unwrap())
     }
 }

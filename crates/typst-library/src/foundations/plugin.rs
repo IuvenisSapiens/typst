@@ -522,7 +522,7 @@ impl PluginInstance {
         let memory = self.memory();
         let mem_pages = memory.size(&self.store);
         let mem_data = memory.data(&self.store).to_vec();
-        Snapshot { mem_pages, mem_data }
+        Snapshot { mem_pages: mem_pages.try_into().unwrap(), mem_data }
     }
 
     /// Restores the instance to a snapshot.
@@ -530,9 +530,9 @@ impl PluginInstance {
     fn restore(&mut self, snapshot: &Snapshot) {
         let memory = self.memory();
         let current_size = memory.size(&self.store);
-        if current_size < snapshot.mem_pages {
+        if current_size < snapshot.mem_pages as u64 {
             memory
-                .grow(&mut self.store, snapshot.mem_pages - current_size)
+                .grow(&mut self.store, snapshot.mem_pages as u64 - current_size)
                 .unwrap();
         }
 

@@ -14,6 +14,10 @@ mod toml_;
 mod xml_;
 #[path = "yaml.rs"]
 mod yaml_;
+// #[path = "audio.rs"]
+// mod audio_;
+// #[path = "tts.rs"]
+// mod tts_;
 
 use comemo::Tracked;
 use ecow::EcoString;
@@ -26,6 +30,8 @@ pub use self::read_::*;
 pub use self::toml_::*;
 pub use self::xml_::*;
 pub use self::yaml_::*;
+// pub use self::audio_::*;
+// pub use self::tts_::*;
 
 use crate::diag::{At, SourceResult};
 use crate::foundations::OneOrMultiple;
@@ -42,6 +48,8 @@ pub(super) fn define(global: &mut Scope) {
     global.define_func::<yaml>();
     global.define_func::<cbor>();
     global.define_func::<xml>();
+    // global.define_func::<audio>();
+    // global.define_func::<tts>();
     global.reset_category();
 }
 
