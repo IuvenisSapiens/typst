@@ -3,9 +3,8 @@ use std::fmt::Write;
 use typst_library::diag::{bail, At, SourceResult, StrResult};
 use typst_library::foundations::Repr;
 use typst_library::html::{
-    attr, charsets, tag, HtmlDocument, HtmlElement, HtmlNode, HtmlTag,
+    attr, charsets, tag, HtmlDocument, HtmlElement, HtmlFrame, HtmlNode, HtmlTag,
 };
-use typst_library::layout::Frame;
 use typst_syntax::Span;
 
 /// Encodes an HTML document into a string.
@@ -113,7 +112,7 @@ fn write_element(w: &mut Writer, element: &HtmlElement) -> SourceResult<()> {
 /// Encodes the children of an element.
 fn write_children(w: &mut Writer, element: &HtmlElement) -> SourceResult<()> {
     // See HTML spec § 13.1.2.5.
-    if element.tag == tag::pre && starts_with_newline(element) {
+    if matches!(element.tag, tag::pre | tag::textarea) && starts_with_newline(element) {
         w.buf.push('\n');
     }
 
@@ -304,9 +303,15 @@ fn write_escape(w: &mut Writer, c: char) -> StrResult<()> {
 }
 
 /// Encode a laid out frame into the writer.
-fn write_frame(w: &mut Writer, frame: &Frame) {
+fn write_frame(w: &mut Writer, frame: &HtmlFrame) {
     // FIXME: This string replacement is obviously a hack.
-    let svg = typst_svg::svg_frame(frame)
-        .replace("<svg class", "<svg style=\"overflow: visible;\" class");
+    let svg = typst_svg::svg_frame(&frame.inner).replace(
+        "<svg class",
+        &format!(
+            "<svg style=\"overflow: visible; width: {}em; height: {}em;\" class",
+            frame.inner.width() / frame.text_size,
+            frame.inner.height() / frame.text_size,
+        ),
+    );
     w.buf.push_str(&svg);
 }
