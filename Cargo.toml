@@ -32,7 +32,7 @@ typst-svg = { path = "crates/typst-svg", version = "0.13.1" }
 typst-syntax = { path = "crates/typst-syntax", version = "0.13.1" }
 typst-timing = { path = "crates/typst-timing", version = "0.13.1" }
 typst-utils = { path = "crates/typst-utils", version = "0.13.1" }
-typst-assets = { git = "https://github.com/typst/typst-assets", rev = "c1089b4" }
+typst-assets = { git = "https://github.com/typst/typst-assets", rev = "edf0d64" }
 typst-dev-assets = { git = "https://github.com/typst/typst-dev-assets", rev = "bfa947f" }
 arrayvec = "0.7.6"
 az = "1.2.1"
@@ -47,7 +47,7 @@ clap = { version = "4.5.40", features = ["derive", "env", "wrap_help"] }
 clap_complete = "4.5.54"
 clap_mangen = "0.2.27"
 codespan-reporting = "0.12.0"
-codex = { git = "https://github.com/typst/codex", rev = "a5428cb" }
+codex = { git = "https://github.com/typst/codex", rev = "9ac86f9" }
 color-print = "0.3.7"
 comemo = "0.4.0"
 csv = "1.3.1"
@@ -125,7 +125,7 @@ thin-vec = "0.2.14"
 time = { version = "0.3.41", features = ["formatting", "macros", "parsing"] }
 tiny_http = "0.12.0"
 tiny-skia = "0.11.4"
-toml = { version = "0.8.23", default-features = false, features = ["parse", "display"] }
+toml = { version = "0.9.0", default-features = false, features = ["parse", "display"] }
 ttf-parser = "0.25.1"
 two-face = { version = "0.4.3", default-features = false, features = ["syntect-fancy"] }
 typed-arena = "2.0.2"
