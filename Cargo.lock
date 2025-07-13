@@ -766,9 +766,9 @@ dependencies = [
 
 [[package]]
 name = "crc32fast"
-version = "1.4.2"
+version = "1.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a97769d94ddab943e4510d138150169a2758b5ef3eb191a9ee688de3e23ef7b3"
+checksum = "9481c1c90cbf2ac953f07c8d4a58aa3945c425b7185c9154d67a65e4230da511"
 dependencies = [
  "cfg-if",
 ]
@@ -1889,9 +1889,9 @@ dependencies = [
 
 [[package]]
 name = "jieba-rs"
-version = "0.7.3"
+version = "0.7.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b06096b4b61fb4bfdbf16c6a968ea2d6be1ac9617cf3db741c3b641e6c290a35"
+checksum = "f5dd552bbb95d578520ee68403bf8aaf0dbbb2ce55b0854d019f9350ad61040a"
 dependencies = [
  "cedarwood",
  "fxhash",
@@ -1956,7 +1956,7 @@ dependencies = [
 [[package]]
 name = "kokoro-tts"
 version = "0.2.6"
-source = "git+https://github.com/IuvenisSapiens/kokoro.git?branch=master#13da702a24e9d7b86ef3986478d58018c1c6173b"
+source = "git+https://github.com/IuvenisSapiens/kokoro.git?branch=master#f7c625362e5108a8a9d1db568615a55d80d6131f"
 dependencies = [
  "bincode 2.0.1",
  "cc",
