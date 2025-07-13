@@ -1,7 +1,7 @@
 use crate::diag::SourceResult;
 use crate::foundations::{Value, func};
 use kokoro_tts::{KokoroTts, Voice};
-use rodio::{OutputStream, Sink, buffer::SamplesBuffer, Source};
+use rodio::{OutputStreamBuilder, Sink, buffer::SamplesBuffer, Source};
 use std::sync::Arc;
 use typst_syntax::Spanned;
 use crate::diag::SourceDiagnostic;
@@ -47,8 +47,12 @@ pub fn tts(
     );
     let tts_clone = Arc::clone(&tts);
     let text_clone = text.clone();
-    let (_stream, stream_handle) = OutputStream::try_default().unwrap();
-    let sink = Sink::try_new(&stream_handle).unwrap();
+
+    let output_stream_builder = OutputStreamBuilder::from_default_device().unwrap();
+    let output_stream = output_stream_builder.open_stream().unwrap();
+    let stream_handle = output_stream.mixer();
+    let sink = Sink::connect_new(&stream_handle);
+
     let voice_enum = match voice.as_str() {
         "AfMaple" => Voice::AfMaple(1),
         "AfSol" => Voice::AfSol(1),

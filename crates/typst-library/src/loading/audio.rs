@@ -3,7 +3,7 @@ use crate::diag::{LoadError, LoadedWithin, SourceResult};
 use crate::engine::Engine;
 use crate::foundations::{Value, func};
 use crate::loading::{DataSource, Load};
-use rodio::{Decoder, OutputStream, Sink, Source};
+use rodio::{Decoder, OutputStreamBuilder, Sink, Source};
 use std::f64;
 
 /// Play an audio file (mp3, wav, etc).
@@ -36,8 +36,11 @@ pub fn audio(
 
 
 fn play_audio_from_bytes(bytes: &[u8], volume: f32, speed: f32) -> Result<(), rodio::decoder::DecoderError> {
-    let (_stream, stream_handle) = OutputStream::try_default().map_err(|e| rodio::decoder::DecoderError::IoError(format!("OutputStream error: {e}")))?;
-    let sink = Sink::try_new(&stream_handle).map_err(|_e| rodio::decoder::DecoderError::IoError("Sink creation failed".to_string()))?;
+    let output_stream_builder = OutputStreamBuilder::from_default_device().map_err(|e| rodio::decoder::DecoderError::IoError(format!("OutputStreamBuilder error: {e}")))?;
+    let output_stream = output_stream_builder.open_stream().map_err(|e| rodio::decoder::DecoderError::IoError(format!("OutputStream error: {e}")))?;
+
+    let stream_handle = output_stream.mixer();
+    let sink = Sink::connect_new(&stream_handle);
     let cursor = std::io::Cursor::new(bytes.to_vec());
     let source = Decoder::new(cursor)?;
 
@@ -49,6 +52,7 @@ fn play_audio_from_bytes(bytes: &[u8], volume: f32, speed: f32) -> Result<(), ro
     sink.sleep_until_end();
     Ok(())
 }
+
 
 fn format_audio_error(error: rodio::decoder::DecoderError) -> LoadError {
     LoadError::new(crate::diag::ReportPos::default(), "failed to play audio", error)
