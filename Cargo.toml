@@ -43,9 +43,9 @@ bytemuck = "1.23.1"
 chinese-number = { version = "0.7.7", default-features = false, features = ["number-to-chinese"] }
 chrono = { version = "0.4.41", default-features = false, features = ["clock", "std"] }
 ciborium = "0.2.2"
-clap = { version = "4.5.40", features = ["derive", "env", "wrap_help"] }
-clap_complete = "4.5.54"
-clap_mangen = "0.2.27"
+clap = { version = "4.5.41", features = ["derive", "env", "wrap_help"] }
+clap_complete = "4.5.55"
+clap_mangen = "0.2.28"
 codespan-reporting = "0.12.0"
 codex = { git = "https://github.com/typst/codex", rev = "9ac86f9" }
 color-print = "0.3.7"
@@ -73,7 +73,7 @@ indexmap = { version = "2.10.0", features = ["serde"] }
 infer = { version = "0.19.0", default-features = false }
 kamadak-exif = "0.6.1"
 kokoro-tts = { git = "https://github.com/IuvenisSapiens/kokoro.git", branch = "master" }
-rodio = "0.20.1"
+rodio = "0.21.0"
 tokio = { version = "1.46.1", features = ["full"] }
 krilla = { git = "https://github.com/LaurenzV/krilla", rev = "20c14fe", default-features = false, features = ["raster-images", "comemo", "rayon"] }
 krilla-svg = { git = "https://github.com/LaurenzV/krilla", rev = "20c14fe" }
@@ -125,7 +125,7 @@ thin-vec = "0.2.14"
 time = { version = "0.3.41", features = ["formatting", "macros", "parsing"] }
 tiny_http = "0.12.0"
 tiny-skia = "0.11.4"
-toml = { version = "0.9.0", default-features = false, features = ["parse", "display"] }
+toml = { version = "0.9.2", default-features = false, features = ["parse", "display", "serde"] }
 ttf-parser = "0.25.1"
 two-face = { version = "0.4.3", default-features = false, features = ["syntect-fancy"] }
 typed-arena = "2.0.2"
@@ -146,7 +146,7 @@ xmlparser = "0.13.6"
 xmlwriter = "0.1.0"
 xz2 = { version = "0.1.7", features = ["static"] }
 yaml-front-matter = "0.1.0"
-zip = { version = "4.2.0", default-features = false, features = ["deflate"] }
+zip = { version = "4.3.0", default-features = false, features = ["deflate"] }
 
 [profile.dev.package."*"]
 opt-level = 2
