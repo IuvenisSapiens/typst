@@ -8,7 +8,7 @@ mod bitset;
 mod deferred;
 mod duration;
 mod hash;
-mod pico;
+pub mod pico;
 mod round;
 mod scalar;
 

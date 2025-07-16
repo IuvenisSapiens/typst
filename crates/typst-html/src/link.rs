@@ -6,7 +6,7 @@ use typst_library::foundations::{Label, NativeElement};
 use typst_library::introspection::{Introspector, Location, Tag};
 use typst_library::layout::{Frame, FrameItem, Point};
 use typst_library::model::{Destination, LinkElem};
-use typst_utils::PicoStr;
+use typst_utils::pico::PicoStr;
 
 use crate::{attr, tag, HtmlElement, HtmlNode};
 
