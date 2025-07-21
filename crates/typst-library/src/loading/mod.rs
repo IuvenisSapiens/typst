@@ -33,10 +33,10 @@ pub use self::yaml_::*;
 // pub use self::audio_::*;
 // pub use self::tts_::*;
 
+use crate::World;
 use crate::diag::{At, SourceResult};
 use crate::foundations::OneOrMultiple;
-use crate::foundations::{cast, Bytes, Scope, Str};
-use crate::World;
+use crate::foundations::{Bytes, Scope, Str, cast};
 
 /// Hook up all `data-loading` definitions.
 pub(super) fn define(global: &mut Scope) {
