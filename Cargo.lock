@@ -531,13 +531,12 @@ dependencies = [
 
 [[package]]
 name = "codespan-reporting"
-version = "0.12.0"
+version = "0.11.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fe6d2e5af09e8c8ad56c969f2157a3d4238cebc7c55f0a517728c38f7b200f81"
+checksum = "3538270d33cc669650c4b093848450d380def10c331d38c768e34cac80576e6e"
 dependencies = [
- "serde",
  "termcolor",
- "unicode-width",
+ "unicode-width 0.1.14",
 ]
 
 [[package]]
@@ -1271,7 +1270,7 @@ version = "0.2.23"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "cba6ae63eb948698e300f645f87c70f76630d505f23b8907cf1e193ee85048c1"
 dependencies = [
- "unicode-width",
+ "unicode-width 0.2.1",
 ]
 
 [[package]]
@@ -1373,6 +1372,69 @@ dependencies = [
  "unicode-segmentation",
  "unscanny",
  "url",
+]
+
+[[package]]
+name = "hayro"
+version = "0.1.0"
+source = "git+https://github.com/LaurenzV/hayro?rev=e701f95#e701f9569157a2fe4ade68930dc9e9283782dcca"
+dependencies = [
+ "bytemuck",
+ "hayro-interpret",
+ "image",
+ "kurbo",
+ "rustc-hash",
+ "smallvec 1.15.1",
+]
+
+[[package]]
+name = "hayro-font"
+version = "0.1.0"
+source = "git+https://github.com/LaurenzV/hayro?rev=e701f95#e701f9569157a2fe4ade68930dc9e9283782dcca"
+dependencies = [
+ "log",
+ "phf 0.11.3",
+]
+
+[[package]]
+name = "hayro-interpret"
+version = "0.1.0"
+source = "git+https://github.com/LaurenzV/hayro?rev=e701f95#e701f9569157a2fe4ade68930dc9e9283782dcca"
+dependencies = [
+ "bitflags 2.9.1",
+ "hayro-font",
+ "hayro-syntax",
+ "kurbo",
+ "log",
+ "phf 0.11.3",
+ "qcms",
+ "skrifa",
+ "smallvec 1.15.1",
+ "yoke 0.8.0",
+]
+
+[[package]]
+name = "hayro-syntax"
+version = "0.0.1"
+source = "git+https://github.com/LaurenzV/hayro?rev=e701f95#e701f9569157a2fe4ade68930dc9e9283782dcca"
+dependencies = [
+ "flate2",
+ "kurbo",
+ "log",
+ "rustc-hash",
+ "smallvec 1.15.1",
+ "zune-jpeg",
+]
+
+[[package]]
+name = "hayro-write"
+version = "0.1.0"
+source = "git+https://github.com/LaurenzV/hayro?rev=e701f95#e701f9569157a2fe4ade68930dc9e9283782dcca"
+dependencies = [
+ "flate2",
+ "hayro-syntax",
+ "log",
+ "pdf-writer",
 ]
 
 [[package]]
@@ -1795,9 +1857,9 @@ dependencies = [
 
 [[package]]
 name = "io-uring"
-version = "0.7.8"
+version = "0.7.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b86e202f00093dcba4275d4636b93ef9dd75d025ae560d2521b45ea28ab49013"
+checksum = "d93587f37623a1a17d94ef2bc9ada592f5465fe7732084ab7beefabe5c77c0c4"
 dependencies = [
  "bitflags 2.9.1",
  "cfg-if",
@@ -1954,7 +2016,7 @@ dependencies = [
 [[package]]
 name = "krilla"
 version = "0.4.0"
-source = "git+https://github.com/LaurenzV/krilla?rev=20c14fe#20c14fefee5002566b3d6668b338bbe2168784e7"
+source = "git+https://github.com/LaurenzV/krilla?rev=37b9a00#37b9a00bfac87ed0b347b7cf8e9d37a6f68fcccd"
 dependencies = [
  "base64",
  "bumpalo",
@@ -1963,6 +2025,7 @@ dependencies = [
  "float-cmp 0.10.0",
  "fxhash",
  "gif",
+ "hayro-write",
  "image-webp",
  "imagesize",
  "once_cell",
@@ -1972,6 +2035,7 @@ dependencies = [
  "rustybuzz",
  "siphasher",
  "skrifa",
+ "smallvec 1.15.1",
  "subsetter",
  "tiny-skia-path",
  "xmp-writer",
@@ -1982,7 +2046,7 @@ dependencies = [
 [[package]]
 name = "krilla-svg"
 version = "0.1.0"
-source = "git+https://github.com/LaurenzV/krilla?rev=20c14fe#20c14fefee5002566b3d6668b338bbe2168784e7"
+source = "git+https://github.com/LaurenzV/krilla?rev=37b9a00#37b9a00bfac87ed0b347b7cf8e9d37a6f68fcccd"
 dependencies = [
  "flate2",
  "fontdb",
@@ -2731,6 +2795,7 @@ version = "0.11.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1fd6780a80ae0c52cc120a26a1a42c1ae51b247a253e4e06113d23d2c2edd078"
 dependencies = [
+ "phf_macros 0.11.3",
  "phf_shared 0.11.3",
 ]
 
@@ -2740,7 +2805,7 @@ version = "0.12.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "913273894cec178f401a31ec4b656318d95473527be05c0752cc41cdc32be8b7"
 dependencies = [
- "phf_macros",
+ "phf_macros 0.12.1",
  "phf_shared 0.12.1",
  "serde",
 ]
@@ -2773,6 +2838,19 @@ checksum = "2cbb1126afed61dd6368748dae63b1ee7dc480191c6262a3b4ff1e29d86a6c5b"
 dependencies = [
  "fastrand",
  "phf_shared 0.12.1",
+]
+
+[[package]]
+name = "phf_macros"
+version = "0.11.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f84ac04429c13a7ff43785d75ad27569f2951ce0ffd30a3321230db2fc727216"
+dependencies = [
+ "phf_generator 0.11.3",
+ "phf_shared 0.11.3",
+ "proc-macro2",
+ "quote",
+ "syn",
 ]
 
 [[package]]
@@ -4207,7 +4285,7 @@ dependencies = [
 [[package]]
 name = "typst-assets"
 version = "0.13.1"
-source = "git+https://github.com/typst/typst-assets?rev=edf0d64#edf0d648376e29738a05a933af9ea99bb81557b1"
+source = "git+https://github.com/typst/typst-assets?rev=fbf00f9#fbf00f9539fdb0825bef4d39fb57d5986c51b756"
 
 [[package]]
 name = "typst-cli"
@@ -4257,7 +4335,7 @@ dependencies = [
 [[package]]
 name = "typst-dev-assets"
 version = "0.13.1"
-source = "git+https://github.com/typst/typst-dev-assets?rev=bfa947f#bfa947f3433d7d13a995168c40ae788a2ebfe648"
+source = "git+https://github.com/typst/typst-dev-assets?rev=c6c2acf#c6c2acf6cdc31f99a23a478d3d614f8bf806a4f5"
 
 [[package]]
 name = "typst-docs"
@@ -4419,6 +4497,7 @@ dependencies = [
  "fontdb",
  "glidesort",
  "hayagriva",
+ "hayro-syntax",
  "icu_properties 1.5.1",
  "icu_provider 1.5.0",
  "icu_provider_blob",
@@ -4520,11 +4599,13 @@ version = "0.13.1"
 dependencies = [
  "bytemuck",
  "comemo",
+ "hayro",
  "image",
  "pixglyph",
  "resvg",
  "tiny-skia",
  "ttf-parser",
+ "typst-assets",
  "typst-library",
  "typst-macros",
  "typst-timing",
@@ -4538,8 +4619,10 @@ dependencies = [
  "comemo",
  "ecow",
  "flate2",
+ "hayro",
  "image",
  "ttf-parser",
+ "typst-assets",
  "typst-library",
  "typst-macros",
  "typst-timing",
@@ -4699,6 +4782,12 @@ name = "unicode-vo"
 version = "0.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b1d386ff53b415b7fe27b50bb44679e2cc4660272694b7b6f3326d8480823a94"
+
+[[package]]
+name = "unicode-width"
+version = "0.1.14"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7dd6e30e90baa6f72411720665d41d89b9a3d039dc45b8faea1ddd07f617f6af"
 
 [[package]]
 name = "unicode-width"
@@ -5013,7 +5102,7 @@ dependencies = [
  "bumpalo",
  "leb128fmt",
  "memchr",
- "unicode-width",
+ "unicode-width 0.2.1",
  "wasm-encoder",
 ]
 
