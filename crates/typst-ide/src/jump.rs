@@ -72,7 +72,6 @@ pub fn jump_from_click(
             }
 
             FrameItem::Text(text) => {
-                let mut pos = *pos;
                 for glyph in &text.glyphs {
                     let width = glyph.x_advance.at(text.size);
                     if is_in_rect(
@@ -108,9 +107,9 @@ pub fn jump_from_click(
                 if shape.fill.is_some() {
                     let within = match &shape.geometry {
                         Geometry::Line(..) => false,
-                        Geometry::Rect(size) => is_in_rect(*pos, *size, click),
+                        Geometry::Rect(size) => is_in_rect(pos, *size, click),
                         Geometry::Curve(curve) => {
-                            curve.contains(shape.fill_rule, click - *pos)
+                            curve.contains(shape.fill_rule, click - pos)
                         }
                     };
                     if within {
@@ -126,7 +125,7 @@ pub fn jump_from_click(
                             Geometry::Rect(size) => &Curve::rect(*size),
                             Geometry::Curve(curve) => curve,
                         };
-                        base_curve.stroke_contains(stroke, click - *pos)
+                        base_curve.stroke_contains(stroke, click - pos)
                     };
                     if within {
                         return Jump::from_span(world, *span);
@@ -134,7 +133,7 @@ pub fn jump_from_click(
                 }
             }
 
-            FrameItem::Image(_, size, span) if is_in_rect(*pos, *size, click) => {
+            FrameItem::Image(_, size, span) if is_in_rect(pos, *size, click) => {
                 return Jump::from_span(world, *span);
             }
 
@@ -186,7 +185,6 @@ fn find_in_frame(frame: &Frame, span: Span) -> Option<Point> {
         }
 
         if let FrameItem::Text(text) = item {
-            let mut pos = *pos;
             for glyph in &text.glyphs {
                 if glyph.span.0 == span {
                     return Some(pos);
