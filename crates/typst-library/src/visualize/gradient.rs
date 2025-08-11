@@ -426,10 +426,10 @@ impl Gradient {
         #[named]
         #[default(Smart::Auto)]
         relative: Smart<RelativeTo>,
-        /// The center of the last circle of the gradient.
+        /// The center of the circle of the gradient.
         ///
-        /// A value of `{(50%, 50%)}` means that the end circle is
-        /// centered inside of its container.
+        /// A value of `{(50%, 50%)}` means that the circle is centered inside
+        /// of its container.
         #[named]
         #[default(Axes::splat(Ratio::new(0.5)))]
         center: Axes<Ratio>,
@@ -1083,7 +1083,7 @@ pub struct ConicGradient {
     pub stops: Vec<(Color, Ratio)>,
     /// The direction of this gradient.
     pub angle: Angle,
-    /// The center of last circle of this gradient.
+    /// The center of circle of this gradient.
     pub center: Axes<Ratio>,
     /// The color space in which to interpolate the gradient.
     pub space: ColorSpace,
@@ -1143,9 +1143,9 @@ impl Repr for ConicGradient {
 /// What is the gradient relative to.
 #[derive(Cast, Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum RelativeTo {
-    /// The gradient is relative to itself (its own bounding box).
+    /// Relative to itself (its own bounding box).
     Self_,
-    /// The gradient is relative to its parent (the parent's bounding box).
+    /// Relative to its parent (the parent's bounding box).
     Parent,
 }
 
