@@ -33,7 +33,7 @@ typst-syntax = { path = "crates/typst-syntax", version = "0.13.1" }
 typst-timing = { path = "crates/typst-timing", version = "0.13.1" }
 typst-utils = { path = "crates/typst-utils", version = "0.13.1" }
 typst-assets = { git = "https://github.com/typst/typst-assets", rev = "fbf00f9" }
-typst-dev-assets = { git = "https://github.com/typst/typst-dev-assets", rev = "c6c2acf" }
+typst-dev-assets = { git = "https://github.com/typst/typst-dev-assets", rev = "cb896b4" }
 arrayvec = "0.7.6"
 az = "1.2.1"
 base64 = "0.22.1"
@@ -43,7 +43,7 @@ bytemuck = "1.23.2"
 chinese-number = { version = "0.7.7", default-features = false, features = ["number-to-chinese"] }
 chrono = { version = "0.4.41", default-features = false, features = ["clock", "std"] }
 ciborium = "0.2.2"
-clap = { version = "4.5.45", features = ["derive", "env", "wrap_help"] }
+clap = { version = "4.5.46", features = ["derive", "env", "wrap_help"] }
 clap_complete = "4.5.57"
 clap_mangen = "0.2.29"
 codespan-reporting = "0.12.0"
@@ -70,7 +70,7 @@ icu_provider = { version = "1.5.0", features = ["sync"] }
 icu_provider_adapters = "1.5.0"
 icu_provider_blob = "1.5.0"
 icu_segmenter = { version = "1.5.0", features = ["serde"] }
-image = { version = "0.25.6", default-features = false, features = ["png", "jpeg", "gif", "webp"] }
+image = { version = "0.25.7", default-features = false, features = ["png", "jpeg", "gif", "webp"] }
 indexmap = { version = "2.11.0", features = ["serde"] }
 infer = { version = "0.19.0", default-features = false }
 kamadak-exif = "0.6.1"
@@ -92,9 +92,9 @@ oxipng = { version = "9.1.5", default-features = false, features = ["filetime", 
 palette = { version = "0.7.6", default-features = false, features = ["approx", "libm"] }
 parking_lot = "0.12.4"
 pathdiff = "0.2.3"
-phf = { version = "0.12.1", features = ["macros"] }
+phf = { version = "0.13.1", features = ["macros"] }
 pixglyph = "0.6.0"
-png = "0.17.16"
+png = "0.18.0"
 portable-atomic = "1.11.1"
 proc-macro2 = "1.0.101"
 pulldown-cmark = "0.13.0"
@@ -102,8 +102,8 @@ pulldown-cmark-escape = "0.11.0"
 qcms = "0.3.0"
 quote = "1.0.40"
 rayon = "1.11.0"
-regex = "1.11.1"
-regex-syntax = "0.8.5"
+regex = "1.11.2"
+regex-syntax = "0.8.6"
 resvg = { version = "0.45.1", default-features = false, features = ["raster-images"] }
 roxmltree = "0.20.0"
 rust_decimal = { version = "1.37.2", default-features = false, features = ["maths"] }
@@ -124,7 +124,7 @@ syntect = { version = "5.2.0", default-features = false, features = ["parsing", 
 tar = "0.4.44"
 tempfile = "3.21.0"
 thin-vec = "0.2.14"
-time = { version = "0.3.41", features = ["formatting", "macros", "parsing"] }
+time = { version = "0.3.42", features = ["formatting", "macros", "parsing"] }
 tiny_http = "0.12.0"
 tiny-skia = "0.11.4"
 toml = { version = "0.9.5", default-features = false, features = ["parse", "display", "serde"] }
@@ -142,13 +142,13 @@ ureq = { version = "3.1.0", default-features = false, features = ["native-tls", 
 usvg = { version = "0.45.1", default-features = false, features = ["text"] }
 utf8_iter = "1.0.4"
 walkdir = "2.5.0"
-wasmi = "0.51.0"
+wasmi = "0.51.1"
 web-sys = "0.3.77"
 xmlparser = "0.13.6"
 xmlwriter = "0.1.0"
 xz2 = { version = "0.1.7", features = ["static"] }
 yaml-front-matter = "0.1.0"
-zip = { version = "4.5.0", default-features = false, features = ["deflate"] }
+zip = { version = "4.6.0", default-features = false, features = ["deflate"] }
 
 [profile.dev.package."*"]
 opt-level = 2
