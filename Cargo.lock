@@ -4616,7 +4616,7 @@ dependencies = [
  "memchr",
  "palette",
  "phf 0.13.1",
- "png 0.18.0",
+ "png 0.17.16",
  "qcms",
  "rayon",
  "regex",
