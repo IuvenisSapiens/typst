@@ -41,7 +41,7 @@ bitflags = { version = "2.9.4", features = ["serde"] }
 bumpalo = { version = "3.19.0", features = ["boxed", "collections"] }
 bytemuck = "1.23.2"
 chinese-number = { version = "0.7.7", default-features = false, features = ["number-to-chinese"] }
-chrono = { version = "0.4.41", default-features = false, features = ["clock", "std"] }
+chrono = { version = "0.4.42", default-features = false, features = ["clock", "std"] }
 ciborium = "0.2.2"
 clap = { version = "4.5.47", features = ["derive", "env", "wrap_help"] }
 clap_complete = "4.5.57"
@@ -51,7 +51,7 @@ codex = { git = "https://github.com/typst/codex", rev = "775d828" }
 color-print = "0.3.7"
 comemo = "0.5.0"
 csv = "1.3.1"
-ctrlc = "3.4.7"
+ctrlc = "3.5.0"
 dirs = "6.0.0"
 ecow = { version = "0.2.6", features = ["serde"] }
 fastrand = "2.3.0"
@@ -64,14 +64,14 @@ hayagriva = "0.8.1"
 hayro-syntax = "0.2.0"
 hayro = "0.2.0"
 heck = "0.5.0"
-hypher = "0.1.5"
+hypher = "0.1.6"
 icu_properties = { version = "1.5.1", features = ["serde"] }
 icu_provider = { version = "1.5.0", features = ["sync"] }
 icu_provider_adapters = "1.5.0"
 icu_provider_blob = "1.5.0"
 icu_segmenter = { version = "1.5.0", features = ["serde"] }
 image = { version = "0.25.8", default-features = false, features = ["png", "jpeg", "gif", "webp"] }
-indexmap = { version = "2.11.0", features = ["serde"] }
+indexmap = { version = "2.11.1", features = ["serde"] }
 infer = { version = "0.19.0", default-features = false }
 kamadak-exif = "0.6.1"
 # kokoro-tts = { git = "https://github.com/IuvenisSapiens/kokoro.git", branch = "master" }
@@ -138,7 +138,7 @@ unicode-script = "0.5.7"
 unicode-normalization = "0.1.24"
 unicode-segmentation = "1.12.0"
 unscanny = "0.1.0"
-ureq = { version = "3.1.0", default-features = false, features = ["native-tls", "gzip", "json", "socks-proxy"] }
+ureq = { version = "3.1.2", default-features = false, features = ["native-tls", "gzip", "json", "socks-proxy"] }
 usvg = { version = "0.45.1", default-features = false, features = ["text"] }
 utf8_iter = "1.0.4"
 walkdir = "2.5.0"
