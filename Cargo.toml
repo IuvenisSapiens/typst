@@ -44,7 +44,7 @@ chinese-number = { version = "0.7.7", default-features = false, features = ["num
 chrono = { version = "0.4.42", default-features = false, features = ["clock", "std"] }
 ciborium = "0.2.2"
 clap = { version = "4.5.47", features = ["derive", "env", "wrap_help"] }
-clap_complete = "4.5.57"
+clap_complete = "4.5.58"
 clap_mangen = "0.2.29"
 codespan-reporting = "0.12.0"
 codex = { git = "https://github.com/typst/codex", rev = "775d828" }
@@ -71,7 +71,7 @@ icu_provider_adapters = "1.5.0"
 icu_provider_blob = "1.5.0"
 icu_segmenter = { version = "1.5.0", features = ["serde"] }
 image = { version = "0.25.8", default-features = false, features = ["png", "jpeg", "gif", "webp"] }
-indexmap = { version = "2.11.1", features = ["serde"] }
+indexmap = { version = "2.11.3", features = ["serde"] }
 infer = { version = "0.19.0", default-features = false }
 kamadak-exif = "0.6.1"
 # kokoro-tts = { git = "https://github.com/IuvenisSapiens/kokoro.git", branch = "master" }
@@ -106,13 +106,13 @@ regex = "1.11.2"
 regex-syntax = "0.8.6"
 resvg = { version = "0.45.1", default-features = false, features = ["raster-images"] }
 roxmltree = "0.20.0"
-rust_decimal = { version = "1.37.2", default-features = false, features = ["maths"] }
+rust_decimal = { version = "1.38.0", default-features = false, features = ["maths"] }
 rustybuzz = "0.20.1"
 same-file = "1.0.6"
 self-replace = "1.5.0"
-semver = "1.0.26"
-serde = { version = "1.0.219", features = ["derive"] }
-serde_json = "1.0.143"
+semver = "1.0.27"
+serde = { version = "1.0.225", features = ["derive"] }
+serde_json = "1.0.145"
 serde_yaml = "0.9.34-deprecated"
 shell-escape = "0.1.5"
 sigpipe = "0.1.3"
@@ -122,17 +122,17 @@ stacker = "0.1.21"
 syn = { version = "2.0.106", features = ["full", "extra-traits"] }
 syntect = { version = "5.2.0", default-features = false, features = ["parsing", "regex-fancy", "plist-load", "yaml-load"] }
 tar = "0.4.44"
-tempfile = "3.21.0"
+tempfile = "3.22.0"
 thin-vec = "0.2.14"
 time = { version = "0.3.43", features = ["formatting", "macros", "parsing"] }
 tiny_http = "0.12.0"
 tiny-skia = "0.11.4"
-toml = { version = "0.9.5", default-features = false, features = ["parse", "display", "serde"] }
+toml = { version = "0.9.6", default-features = false, features = ["parse", "display", "serde"] }
 ttf-parser = "0.25.1"
 two-face = { version = "0.4.3", default-features = false, features = ["syntect-fancy"] }
 typed-arena = "2.0.2"
 unicode-bidi = "0.3.18"
-unicode-ident = "1.0.18"
+unicode-ident = "1.0.19"
 unicode-math-class = "0.1.0"
 unicode-script = "0.5.7"
 unicode-normalization = "0.1.24"
@@ -143,12 +143,12 @@ usvg = { version = "0.45.1", default-features = false, features = ["text"] }
 utf8_iter = "1.0.4"
 walkdir = "2.5.0"
 wasmi = "0.51.1"
-web-sys = "0.3.78"
+web-sys = "0.3.80"
 xmlparser = "0.13.6"
 xmlwriter = "0.1.0"
 xz2 = { version = "0.1.7", features = ["static"] }
 yaml-front-matter = "0.1.0"
-zip = { version = "5.0.0", default-features = false, features = ["deflate"] }
+zip = { version = "5.1.1", default-features = false, features = ["deflate"] }
 
 [profile.dev.package."*"]
 opt-level = 2
