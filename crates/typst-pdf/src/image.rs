@@ -51,18 +51,25 @@ pub(crate) fn handle_image(
                 gc.image_to_spans.insert(image.clone(), span);
             }
 
-            surface.draw_image(image, new_size.to_krilla());
+            if let Some(size) = new_size.to_krilla() {
+                surface.draw_image(image, size);
+            }
+
             surface.pop();
         }
         ImageKind::Svg(svg) => {
-            surface.draw_svg(
-                svg.tree(),
-                size.to_krilla(),
-                SvgSettings { embed_text: true, ..Default::default() },
-            );
+            if let Some(size) = size.to_krilla() {
+                surface.draw_svg(
+                    svg.tree(),
+                    size,
+                    SvgSettings { embed_text: true, ..Default::default() },
+                );
+            }
         }
         ImageKind::Pdf(pdf) => {
-            surface.draw_pdf_page(&convert_pdf(pdf), size.to_krilla(), pdf.page_index())
+            if let Some(size) = size.to_krilla() {
+                surface.draw_pdf_page(&convert_pdf(pdf), size, pdf.page_index());
+            }
         }
     }
 
@@ -206,6 +213,13 @@ fn convert_pdf(pdf: &PdfImage) -> PdfDocument {
 }
 
 fn exif_transform(image: &RasterImage, size: Size) -> (Transform, Size) {
+    // For JPEGs, we want to apply the EXIF orientation as a transformation
+    // because we don't recode them. For other formats, the transform is already
+    // baked into the dynamic image data.
+    if image.format() != RasterFormat::Exchange(ExchangeFormat::Jpg) {
+        return (Transform::identity(), size);
+    }
+
     let base = |hp: bool, vp: bool, mut base_ts: Transform, size: Size| {
         if hp {
             // Flip horizontally in-place.
@@ -241,9 +255,9 @@ fn exif_transform(image: &RasterImage, size: Size) -> (Transform, Size) {
         Some(3) => no_flipping(true, true),
         Some(4) => no_flipping(false, true),
         Some(5) => with_flipping(false, false),
-        Some(6) => with_flipping(true, false),
+        Some(6) => with_flipping(false, true),
         Some(7) => with_flipping(true, true),
-        Some(8) => with_flipping(false, true),
+        Some(8) => with_flipping(true, false),
         _ => no_flipping(false, false),
     }
 }
