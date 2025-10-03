@@ -129,7 +129,7 @@ impl Load for Spanned<&OneOrMultiple<DataSource>> {
 }
 
 /// Data loaded from a [`DataSource`].
-#[derive(Clone, Debug, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, Eq, PartialEq, Hash)]
 pub struct Loaded {
     /// Details about where `data` was loaded from.
     pub source: Spanned<LoadSource>,
@@ -144,7 +144,7 @@ impl Loaded {
 }
 
 /// A loaded [`DataSource`].
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Eq, PartialEq, Hash)]
 pub enum LoadSource {
     Path(FileId),
     Bytes,

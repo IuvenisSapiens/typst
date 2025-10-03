@@ -882,7 +882,9 @@ impl<'a> Generator<'a> {
 
             let prefix = prefix.map(|content| {
                 if let Some(location) = first_occurrences.get(item.key.as_str()) {
-                    DirectLinkElem::new(*location, content).pack()
+                    let alt = content.plain_text();
+                    let body = content.spanned(self.bibliography.span());
+                    DirectLinkElem::new(*location, body, Some(alt)).pack()
                 } else {
                     content
                 }
@@ -1000,10 +1002,13 @@ impl ElemRenderer<'_> {
             _ => {}
         }
 
+        content = content.spanned(self.span);
+
         if let Some(hayagriva::ElemMeta::Entry(i)) = elem.meta
             && let Some(location) = (self.link)(i)
         {
-            content = DirectLinkElem::new(location, content).pack();
+            let alt = content.plain_text();
+            content = DirectLinkElem::new(location, content, Some(alt)).pack();
         }
 
         Ok(content)

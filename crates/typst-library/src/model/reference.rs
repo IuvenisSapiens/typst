@@ -7,7 +7,7 @@ use crate::foundations::{
     Cast, Content, Context, Func, IntoValue, Label, NativeElement, Packed, Repr, Smart,
     StyleChain, Synthesize, cast, elem,
 };
-use crate::introspection::{Counter, CounterKey, Locatable};
+use crate::introspection::{Counter, CounterKey, Locatable, Tagged};
 use crate::math::EquationElem;
 use crate::model::{
     BibliographyElem, CiteElem, DirectLinkElem, Figurable, FootnoteElem, Numbering,
@@ -134,7 +134,7 @@ use crate::text::TextElem;
 /// In @beginning we prove @pythagoras.
 /// $ a^2 + b^2 = c^2 $ <pythagoras>
 /// ```
-#[elem(title = "Reference", Synthesize, Locatable)]
+#[elem(title = "Reference", Locatable, Tagged, Synthesize)]
 pub struct RefElem {
     /// The target label that should be referenced.
     ///
@@ -341,12 +341,20 @@ fn realize_reference(
         Smart::Custom(Some(supplement)) => supplement.resolve(engine, styles, [elem])?,
     };
 
+    let alt = {
+        let supplement = supplement.plain_text();
+        let numbering = numbers.plain_text();
+        eco_format!("{supplement} {numbering}",)
+    };
+
     let mut content = numbers;
     if !supplement.is_empty() {
         content = supplement + TextElem::packed("\u{a0}") + content;
     }
 
-    Ok(DirectLinkElem::new(loc, content).pack())
+    content = content.spanned(reference.span());
+
+    Ok(DirectLinkElem::new(loc, content, Some(alt)).pack())
 }
 
 /// Turn a reference into a citation.
