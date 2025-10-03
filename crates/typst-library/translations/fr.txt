@@ -6,6 +6,6 @@ heading = Chapitre
 outline = Table des matières
 raw = Liste
 page = page
-# footnote =
+footnote = Note
 # email =
 # telephone =
