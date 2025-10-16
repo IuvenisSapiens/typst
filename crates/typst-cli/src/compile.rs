@@ -640,7 +640,7 @@ pub fn print_diagnostics(
         )
         .with_labels(label(world, diagnostic.span).into_iter().collect());
 
-        term::emit(&mut terminal::out(), &config, world, &diag)?;
+        term::emit_to_write_style(&mut terminal::out(), &config, world, &diag)?;
 
         // Stacktrace-like helper diagnostics.
         for point in &diagnostic.trace {
@@ -649,7 +649,7 @@ pub fn print_diagnostics(
                 .with_message(message)
                 .with_labels(label(world, point.span).into_iter().collect());
 
-            term::emit(&mut terminal::out(), &config, world, &help)?;
+            term::emit_to_write_style(&mut terminal::out(), &config, world, &help)?;
         }
     }
 
