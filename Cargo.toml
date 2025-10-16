@@ -149,7 +149,7 @@ xmlparser = "0.13.6"
 xmlwriter = "0.1.0"
 xz2 = { version = "0.1.7", features = ["static"] }
 yaml-front-matter = "0.1.0"
-zip = { version = "5.1.1", default-features = false, features = ["deflate"] }
+zip = { version = "6.0.0", default-features = false, features = ["deflate"] }
 
 [profile.dev.package."*"]
 opt-level = 2
