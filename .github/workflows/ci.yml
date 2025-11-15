@@ -112,6 +112,6 @@ jobs:
       - uses: dtolnay/rust-toolchain@master
         with:
           components: miri
-          toolchain: nightly-2025-05-10
+          toolchain: nightly-2025-10-28
       - uses: Swatinem/rust-cache@v2
       - run: cargo miri test -p typst-library test_miri
