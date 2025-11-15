@@ -1933,7 +1933,7 @@ dependencies = [
 [[package]]
 name = "kokoro-tts"
 version = "0.3.1"
-source = "git+https://github.com/IuvenisSapiens/kokoro.git?branch=feat_json#187b7e9ea5c727cb92ff2272e8b8f49457007cda"
+source = "git+https://github.com/IuvenisSapiens/kokoro.git?branch=feat_json#bc66e64c3b6c09433e7b81598d504dd488197aa8"
 dependencies = [
  "bincode 2.0.1",
  "cc",
@@ -3089,8 +3089,7 @@ dependencies = [
 [[package]]
 name = "rand"
 version = "0.10.0-rc.5"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "be866deebbade98028b705499827ad6967c8bb1e21f96a2609913c8c076e9307"
+source = "git+https://github.com/rust-random/rand?branch=master#2eb1bbeb1dc0f489c1575f3f5157bd851acdf255"
 dependencies = [
  "chacha20",
  "getrandom 0.3.4",
