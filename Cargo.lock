@@ -3397,6 +3397,7 @@ dependencies = [
 name = "typst-library"
 version = "0.14.0"
 dependencies = [
+ "arrayvec",
  "az",
  "bitflags 2.10.0",
  "bumpalo",
