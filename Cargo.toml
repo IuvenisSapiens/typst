@@ -33,7 +33,7 @@ typst-syntax = { path = "crates/typst-syntax", version = "0.14.0" }
 typst-timing = { path = "crates/typst-timing", version = "0.14.0" }
 typst-utils = { path = "crates/typst-utils", version = "0.14.0" }
 typst-assets = { git = "https://github.com/typst/typst-assets", rev = "d6a4834" }
-typst-dev-assets = { git = "https://github.com/typst/typst-dev-assets", rev = "0b12d75" }
+typst-dev-assets = { git = "https://github.com/typst/typst-dev-assets", rev = "f46583d" }
 arrayvec = "0.7.6"
 az = "1.2.1"
 base64 = "0.22.1"
@@ -79,8 +79,8 @@ kamadak-exif = "0.6.1"
 kokoro-tts = { git = "https://github.com/IuvenisSapiens/kokoro.git", branch = "feat_json" }
 rodio = "0.21.1"
 tokio = { version = "1.48.0", features = ["full"] }
-krilla = { git = "https://github.com/LaurenzV/krilla", rev = "e5639c6", default-features = false, features = ["raster-images", "comemo", "rayon", "pdf"] }
-krilla-svg = { git = "https://github.com/LaurenzV/krilla", rev = "e5639c6" }
+krilla = { git = "https://github.com/LaurenzV/krilla", rev = "f22a936", default-features = false, features = ["raster-images", "comemo", "rayon", "pdf"] }
+krilla-svg = { git = "https://github.com/LaurenzV/krilla", rev = "f22a936" }
 kurbo = "0.12.0"
 libfuzzer-sys = "0.4.10"
 lipsum = "0.9.1"
@@ -144,8 +144,8 @@ ureq = { version = "3.1.2", default-features = false, features = ["native-tls", 
 usvg = { version = "0.45.1", default-features = false, features = ["text"] }
 utf8_iter = "1.0.4"
 walkdir = "2.5.0"
-wasmi = { version = "0.51.1", default-features = false, features = ["simd"] }
-web-sys = "0.3.81"
+wasmi = { version = "0.51.2", default-features = false, features = ["simd"] }
+web-sys = "0.3.82"
 xmlparser = "0.13.6"
 xmlwriter = "0.1.0"
 xz2 = { version = "0.1.7", features = ["static"] }
