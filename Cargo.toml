@@ -37,7 +37,7 @@ typst-dev-assets = { git = "https://github.com/typst/typst-dev-assets", rev = "f
 arrayvec = "0.7.6"
 az = "1.2.1"
 base64 = "0.22.1"
-bitflags = { version = "2.9.4", features = ["serde"] }
+bitflags = { version = "2.10.0", features = ["serde"] }
 bumpalo = { version = "3.19.0", features = ["boxed", "collections"] }
 bytemuck = "1.24.0"
 chinese-number = { version = "0.7.7", default-features = false, features = ["number-to-chinese"] }
@@ -73,15 +73,15 @@ icu_provider_adapters = "1.5.0"
 icu_provider_blob = "1.5.0"
 icu_segmenter = { version = "1.5.0", features = ["serde"] }
 image = { version = "0.25.8", default-features = false, features = ["png", "jpeg", "gif", "webp"] }
-indexmap = { version = "2.12.0", features = ["serde"] }
+indexmap = { version = "2.12.1", features = ["serde"] }
 infer = { version = "0.19.0", default-features = false }
 kamadak-exif = "0.6.1"
 # kokoro-tts = { git = "https://github.com/IuvenisSapiens/kokoro.git", branch = "master" }
 # rodio = "0.21.1"
 # tokio = { version = "1.48.0", features = ["full"] }
-krilla = { git = "https://github.com/LaurenzV/krilla", rev = "f22a936", default-features = false, features = ["raster-images", "comemo", "rayon", "pdf"] }
-krilla-svg = { git = "https://github.com/LaurenzV/krilla", rev = "f22a936" }
-kurbo = "0.12.0"
+krilla = { git = "https://github.com/LaurenzV/krilla", rev = "84c6332", default-features = false, features = ["raster-images", "comemo", "rayon", "pdf"] }
+krilla-svg = { git = "https://github.com/LaurenzV/krilla", rev = "84c6332" }
+kurbo = "0.13.0"
 libfuzzer-sys = "0.4.10"
 lipsum = "0.9.1"
 memchr = "2.7.6"
@@ -136,7 +136,7 @@ typed-arena = "2.0.2"
 unicode-bidi = "0.3.18"
 unicode-ident = "1.0.20"
 unicode-math-class = "0.1.0"
-unicode-script = "0.5.7"
+unicode-script = "0.5.8"
 unicode-normalization = "0.1.24"
 unicode-segmentation = "1.12.0"
 unscanny = "0.1.0"
@@ -144,8 +144,8 @@ ureq = { version = "3.1.2", default-features = false, features = ["native-tls", 
 usvg = { version = "0.45.1", default-features = false, features = ["text"] }
 utf8_iter = "1.0.4"
 walkdir = "2.5.0"
-wasmi = { version = "0.51.2", default-features = false, features = ["simd"] }
-web-sys = "0.3.82"
+wasmi = { version = "1.0.0", default-features = false, features = ["simd"] }
+web-sys = "0.3.83"
 xmlparser = "0.13.6"
 xmlwriter = "0.1.0"
 xz2 = { version = "0.1.7", features = ["static"] }
