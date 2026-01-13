@@ -5,10 +5,10 @@ use typst_library::diag::{
     At, FileError, SourceResult, Trace, Tracepoint, bail, error, warning,
 };
 use typst_library::engine::Engine;
-use typst_library::foundations::{Binding, Content, Module, Value};
+use typst_library::foundations::{Binding, Content, Module, PathStr, Value};
 use typst_syntax::ast::{self, AstNode, BareImportError};
 use typst_syntax::package::{PackageManifest, PackageSpec};
-use typst_syntax::{FileId, Span, VirtualPath};
+use typst_syntax::{FileId, Span, VirtualPath, VirtualRoot};
 
 use crate::{Eval, Vm, eval};
 
@@ -65,7 +65,7 @@ impl Eval for ast::ModuleImport<'_> {
             None => {
                 if new_name.is_none() {
                     match self.bare_name() {
-                        // Bare dynamic string imports are not allowed.
+                        // Bare dynamic string or path imports are not allowed.
                         Ok(name)
                             if !is_str || matches!(source_expr, ast::Expr::Str(_)) =>
                         {
@@ -187,8 +187,8 @@ pub fn import(engine: &mut Engine, from: &str, span: Span) -> SourceResult<Modul
         let spec = from.parse::<PackageSpec>().at(span)?;
         import_package(engine, spec, span)
     } else {
-        let id = span.resolve_path(from).at(span)?;
-        import_file(engine, id, span)
+        let path = PathStr(from.into()).resolve_if_some(span.id()).at(span)?;
+        import_file(engine, path, span)
     }
 }
 
@@ -233,7 +233,10 @@ fn resolve_package(
     span: Span,
 ) -> SourceResult<(EcoString, FileId)> {
     // Evaluate the manifest.
-    let manifest_id = FileId::new(Some(spec.clone()), VirtualPath::new("typst.toml"));
+    let manifest_id = FileId::new(
+        VirtualRoot::Package(spec.clone()),
+        VirtualPath::new("typst.toml").unwrap(),
+    );
     let bytes = engine.world.file(manifest_id).at(span)?;
     let string = bytes.as_str().map_err(FileError::from).at(span)?;
     let manifest: PackageManifest = toml::from_str(string)
@@ -242,5 +245,10 @@ fn resolve_package(
     manifest.validate(&spec).at(span)?;
 
     // Evaluate the entry point.
-    Ok((manifest.package.name, manifest_id.join(&manifest.package.entrypoint)))
+    Ok((
+        manifest.package.name,
+        PathStr(manifest.package.entrypoint.into())
+            .resolve(manifest_id)
+            .at(span)?,
+    ))
 }
