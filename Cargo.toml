@@ -75,6 +75,7 @@ icu_segmenter = { version = "2.1.2", features = ["serde"] }
 image = { version = "0.25.9", default-features = false, features = ["png", "jpeg", "gif", "webp"] }
 indexmap = { version = "2.13.0", features = ["serde"] }
 infer = { version = "0.19.0", default-features = false }
+itoa = "1.0.17"
 kamadak-exif = "0.6.1"
 # kokoro-tts = { git = "https://github.com/IuvenisSapiens/kokoro.git", branch = "master" }
 # rodio = "0.21.1"
@@ -108,8 +109,9 @@ regex = "1.12.2"
 regex-syntax = "0.8.8"
 resvg = { version = "0.45.1", default-features = false, features = ["raster-images"] }
 roxmltree = "0.20.0"
-rust_decimal = { version = "1.39.0", default-features = false, features = ["maths"] }
+rust_decimal = { version = "1.40.0", default-features = false, features = ["maths"] }
 rustybuzz = "0.20.1"
+ryu = "1.0.22"
 same-file = "1.0.6"
 self-replace = "1.5.0"
 semver = "1.0.27"
@@ -145,11 +147,10 @@ usvg = { version = "0.45.1", default-features = false, features = ["text"] }
 utf8_iter = "1.0.4"
 walkdir = "2.5.0"
 wasmi = { version = "1.0.7", default-features = false, features = ["simd"] }
-web-sys = "0.3.83"
-xmlparser = "0.13.6"
+web-sys = "0.3.84"
 xmlwriter = "0.1.0"
 xz2 = { version = "0.1.7", features = ["static"] }
-zip = { version = "7.0.0", default-features = false, features = ["deflate"] }
+zip = { version = "7.1.0", default-features = false, features = ["deflate"] }
 
 [profile.dev.package."*"]
 opt-level = 2
