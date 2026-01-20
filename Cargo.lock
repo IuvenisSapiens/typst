@@ -4244,6 +4244,7 @@ dependencies = [
  "icu_provider_blob",
  "icu_segmenter",
  "kurbo 0.13.0",
+ "libm",
  "memchr",
  "rustc-hash",
  "rustybuzz",
@@ -4288,6 +4289,7 @@ dependencies = [
  "kamadak-exif",
  "kokoro-tts",
  "kurbo 0.13.0",
+ "libm",
  "lipsum",
  "memchr",
  "palette",
@@ -4388,6 +4390,7 @@ dependencies = [
  "comemo",
  "hayro",
  "image",
+ "libm",
  "pixglyph",
  "resvg",
  "tiny-skia",
@@ -4486,6 +4489,7 @@ dependencies = [
 name = "typst-utils"
 version = "0.14.2"
 dependencies = [
+ "libm",
  "once_cell",
  "portable-atomic",
  "rayon",
