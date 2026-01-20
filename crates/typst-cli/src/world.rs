@@ -1,63 +1,35 @@
-use std::io::Read;
+use std::fmt;
+use std::io::{self, Read};
 use std::path::{Path, PathBuf};
 use std::sync::{LazyLock, OnceLock};
-use std::{fmt, fs, io, mem};
 
-use chrono::{DateTime, Datelike, FixedOffset, Local, Utc, Timelike};
+use chrono::{DateTime, Datelike, FixedOffset, Local, Timelike, Utc};
 use ecow::{EcoString, eco_format};
-use parking_lot::Mutex;
-use rustc_hash::FxHashMap;
 use typst::diag::{FileError, FileResult};
 use typst::foundations::{Bytes, Datetime, Dict, IntoValue, Repr};
 use typst::syntax::{
-    FileId, Lines, PathError, RootedPath, Source, VirtualPath, VirtualRoot,
-    VirtualizeError,
+    FileId, PathError, RootedPath, Source, VirtualPath, VirtualRoot, VirtualizeError,
 };
 use typst::text::{Font, FontBook};
 use typst::utils::LazyHash;
 use typst::{Library, LibraryExt, World};
-use typst_kit::fonts::Fonts;
-use typst_kit::package::PackageStorage;
-use typst_timing::timed;
+use typst_kit::diagnostics::DiagnosticWorld;
+use typst_kit::files::{FileLoader, FileStore, FsRoot};
+use typst_kit::fonts::FontStore;
+use typst_kit::packages::SystemPackages;
 
-use crate::args::{Feature, FontArgs, Input, ProcessArgs, WorldArgs};
-use crate::download::PrintDownload;
-use crate::package;
-
-/// Static `FileId` allocated for stdin. This is to ensure that stdin can live
-/// in the project root without colliding with any real on-disk file.
-static STDIN_ID: LazyLock<FileId> = LazyLock::new(|| {
-    FileId::unique(RootedPath::new(
-        VirtualRoot::Project,
-        VirtualPath::new("<stdin>").unwrap(),
-    ))
-});
-
-/// Static `FileId` allocated for empty/no input at all. This is to ensure that
-/// we can create a [`SystemWorld`] based on no main file or stdin at all.
-static EMPTY_ID: LazyLock<FileId> = LazyLock::new(|| {
-    FileId::unique(RootedPath::new(
-        VirtualRoot::Project,
-        VirtualPath::new("<empty>").unwrap(),
-    ))
-});
+use crate::args::{Feature, Input, ProcessArgs, WorldArgs};
 
 /// A world that provides access to the operating system.
 pub struct SystemWorld {
     /// The working directory.
     workdir: Option<PathBuf>,
-    /// The root relative to which absolute paths are resolved.
-    root: PathBuf,
-    /// The input path.
-    main: FileId,
     /// Typst's standard library.
     library: LazyHash<Library>,
     /// Metadata about discovered fonts and lazily loaded fonts.
-    fonts: LazyLock<Fonts, Box<dyn Fn() -> Fonts + Send + Sync>>,
+    fonts: LazyLock<FontStore, Box<dyn Fn() -> FontStore + Send + Sync>>,
     /// Maps file ids to source files and buffers.
-    slots: Mutex<FxHashMap<FileId, FileSlot>>,
-    /// Holds information about where packages are stored.
-    package_storage: PackageStorage,
+    files: FileStore<SystemFiles>,
     /// The current datetime if requested. This is stored here to ensure it is
     /// always the same within one compilation.
     /// Reset between compilations if not [`Now::Fixed`].
@@ -65,7 +37,7 @@ pub struct SystemWorld {
 }
 
 impl SystemWorld {
-    /// Create a new system world.
+    /// Creates a new system world.
     pub fn new(
         input: Option<&Input>,
         world_args: &'static WorldArgs,
@@ -79,46 +51,6 @@ impl SystemWorld {
                 .build_global()
                 .ok();
         }
-
-        // Resolve the system-global input path.
-        let input_path = match input {
-            Some(Input::Path(path)) => {
-                Some(path.canonicalize().map_err(|err| match err.kind() {
-                    io::ErrorKind::NotFound => {
-                        WorldCreationError::InputNotFound(path.clone())
-                    }
-                    _ => WorldCreationError::Io(err),
-                })?)
-            }
-            _ => None,
-        };
-
-        // Resolve the system-global root directory.
-        let root = {
-            let path = world_args
-                .root
-                .as_deref()
-                .or_else(|| input_path.as_deref().and_then(|i| i.parent()))
-                .unwrap_or(Path::new("."));
-            path.canonicalize().map_err(|err| match err.kind() {
-                io::ErrorKind::NotFound => {
-                    WorldCreationError::RootNotFound(path.to_path_buf())
-                }
-                _ => WorldCreationError::Io(err),
-            })?
-        };
-
-        let main = if let Some(path) = &input_path {
-            // Resolve the virtual path of the main file within the project root.
-            RootedPath::new(VirtualRoot::Project, VirtualPath::virtualize(&root, path)?)
-                .intern()
-        } else if matches!(input, Some(Input::Stdin)) {
-            // Return the special id of STDIN.
-            *STDIN_ID
-        } else {
-            // Return the special id of EMPTY/no input at all otherwise.
-            *EMPTY_ID
-        };
 
         let library = {
             // Convert the input pairs to a dictionary.
@@ -147,24 +79,18 @@ impl SystemWorld {
 
         Ok(Self {
             workdir: std::env::current_dir().ok(),
-            root,
-            main,
             library: LazyHash::new(library),
-            fonts: LazyLock::new(Box::new(|| scan_fonts(&world_args.font))),
-            slots: Mutex::new(FxHashMap::default()),
-            package_storage: package::storage(&world_args.package),
+            fonts: LazyLock::new(Box::new(|| {
+                crate::fonts::discover_fonts(&world_args.font)
+            })),
+            files: FileStore::new(SystemFiles::new(input, world_args)?),
             now,
         })
     }
 
-    /// The id of the main source file.
-    pub fn main(&self) -> FileId {
-        self.main
-    }
-
-    /// The root relative to which absolute paths are resolved.
+    /// The project root relative to which absolute paths are resolved.
     pub fn root(&self) -> &Path {
-        &self.root
+        self.files.loader().project.path()
     }
 
     /// The current working directory.
@@ -174,40 +100,16 @@ impl SystemWorld {
 
     /// Return all paths the last compilation depended on.
     pub fn dependencies(&mut self) -> impl Iterator<Item = PathBuf> + '_ {
-        self.slots
-            .get_mut()
-            .values()
-            .filter(|slot| slot.accessed())
-            .filter_map(|slot| {
-                system_path(&self.root, slot.id, &self.package_storage).ok()
-            })
+        let (loader, deps) = self.files.dependencies();
+        deps.filter_map(|id| loader.resolve(id).ok())
     }
 
     /// Reset the compilation state in preparation of a new compilation.
     pub fn reset(&mut self) {
-        #[allow(clippy::iter_over_hash_type, reason = "order does not matter")]
-        for slot in self.slots.get_mut().values_mut() {
-            slot.reset();
-        }
+        self.files.reset();
         if let Now::System(time_lock) = &mut self.now {
             time_lock.take();
         }
-    }
-
-    /// Lookup line metadata for a file by id.
-    #[track_caller]
-    pub fn lookup(&self, id: FileId) -> Lines<String> {
-        self.slot(id, |slot| {
-            if let Some(source) = slot.source.get() {
-                let source = source.as_ref().expect("file is not valid");
-                source.lines().clone()
-            } else if let Some(bytes) = slot.file.get() {
-                let bytes = bytes.as_ref().expect("file is not valid");
-                Lines::try_from(bytes).expect("file is not valid UTF-8")
-            } else {
-                panic!("file id does not point to any source file");
-            }
-        })
     }
 
     /// Forcibly scan fonts instead of doing it lazily upon the first access.
@@ -224,26 +126,23 @@ impl World for SystemWorld {
     }
 
     fn book(&self) -> &LazyHash<FontBook> {
-        &self.fonts.book
+        self.fonts.book()
     }
 
     fn main(&self) -> FileId {
-        self.main
+        self.files.loader().main
     }
 
     fn source(&self, id: FileId) -> FileResult<Source> {
-        self.slot(id, |slot| slot.source(&self.root, &self.package_storage))
+        self.files.source(id)
     }
 
     fn file(&self, id: FileId) -> FileResult<Bytes> {
-        self.slot(id, |slot| slot.file(&self.root, &self.package_storage))
+        self.files.file(id)
     }
 
     fn font(&self, index: usize) -> Option<Font> {
-        // comemo's validation may invoke this function with an invalid index.
-        // This is impossible in typst-cli but possible if a custom tool mutates
-        // the fonts.
-        self.fonts.slots.get(index)?.get()
+        self.fonts.font(index)
     }
 
     fn today(&self, offset: Option<i64>) -> Option<Datetime> {
@@ -294,197 +193,126 @@ impl World for SystemWorld {
     }
 }
 
-impl SystemWorld {
-    /// Access the canonical slot for the given file id.
-    fn slot<F, T>(&self, id: FileId, f: F) -> T
-    where
-        F: FnOnce(&mut FileSlot) -> T,
-    {
-        let mut map = self.slots.lock();
-        f(map.entry(id).or_insert_with(|| FileSlot::new(id)))
+impl DiagnosticWorld for SystemWorld {
+    fn name(&self, id: FileId) -> String {
+        let vpath = id.vpath();
+        match id.root() {
+            VirtualRoot::Project => {
+                // Try to express the path relative to the working directory.
+                let rooted = vpath.realize(self.root());
+                pathdiff::diff_paths(rooted, self.workdir())
+                    .map(|path| path.to_string_lossy().into_owned())
+                    .unwrap_or_else(|| vpath.get_without_slash().into())
+            }
+            VirtualRoot::Package(package) => {
+                format!("{package}{}", vpath.get_with_slash())
+            }
+        }
     }
 }
 
-/// Holds the processed data for a file ID.
-///
-/// Both fields can be populated if the file is both imported and read().
-struct FileSlot {
-    /// The slot's file id.
-    id: FileId,
-    /// The lazily loaded and incrementally updated source file.
-    source: SlotCell<Source>,
-    /// The lazily loaded raw byte buffer.
-    file: SlotCell<Bytes>,
+/// Static `FileId` allocated for stdin. This is to ensure that stdin can live
+/// in the project root without colliding with any real on-disk file.
+static STDIN_ID: LazyLock<FileId> = LazyLock::new(|| {
+    FileId::unique(RootedPath::new(
+        VirtualRoot::Project,
+        VirtualPath::new("<stdin>").unwrap(),
+    ))
+});
+
+/// Static `FileId` allocated for empty/no input at all. This is to ensure that
+/// we can create a [`SystemWorld`] based on no main file or stdin at all.
+static EMPTY_ID: LazyLock<FileId> = LazyLock::new(|| {
+    FileId::unique(RootedPath::new(
+        VirtualRoot::Project,
+        VirtualPath::new("<empty>").unwrap(),
+    ))
+});
+
+/// Provides project files from a configured directory and package files from
+/// standard locations.
+struct SystemFiles {
+    main: FileId,
+    project: FsRoot,
+    packages: SystemPackages,
 }
 
-impl FileSlot {
-    /// Create a new file slot.
-    fn new(id: FileId) -> Self {
-        Self { id, file: SlotCell::new(), source: SlotCell::new() }
-    }
+impl SystemFiles {
+    /// Creates a new loader given the configuration.
+    pub fn new(
+        input: Option<&Input>,
+        world_args: &'static WorldArgs,
+    ) -> Result<Self, WorldCreationError> {
+        // Resolve the system-global input path.
+        let input_path = match input {
+            Some(Input::Path(path)) => {
+                Some(path.canonicalize().map_err(|err| match err.kind() {
+                    io::ErrorKind::NotFound => {
+                        WorldCreationError::InputNotFound(path.clone())
+                    }
+                    _ => WorldCreationError::Io(err),
+                })?)
+            }
+            _ => None,
+        };
 
-    /// Whether the file was accessed in the ongoing compilation.
-    fn accessed(&self) -> bool {
-        self.source.accessed() || self.file.accessed()
-    }
-
-    /// Marks the file as not yet accessed in preparation of the next
-    /// compilation.
-    fn reset(&mut self) {
-        self.source.reset();
-        self.file.reset();
-    }
-
-    /// Retrieve the source for this file.
-    fn source(
-        &mut self,
-        project_root: &Path,
-        package_storage: &PackageStorage,
-    ) -> FileResult<Source> {
-        self.source.get_or_init(
-            || read(self.id, project_root, package_storage),
-            |data, prev| {
-                let text = decode_utf8(&data)?;
-                if let Some(mut prev) = prev {
-                    prev.replace(text);
-                    Ok(prev)
-                } else {
-                    Ok(Source::new(self.id, text.into()))
+        // Resolve the system-global root directory.
+        let root = {
+            let path = world_args
+                .root
+                .as_deref()
+                .or_else(|| input_path.as_deref().and_then(|i| i.parent()))
+                .unwrap_or(Path::new("."));
+            path.canonicalize().map_err(|err| match err.kind() {
+                io::ErrorKind::NotFound => {
+                    WorldCreationError::RootNotFound(path.to_path_buf())
                 }
-            },
-        )
+                _ => WorldCreationError::Io(err),
+            })?
+        };
+
+        let main = if let Some(path) = &input_path {
+            // Resolve the virtual path of the main file within the project root.
+            RootedPath::new(VirtualRoot::Project, VirtualPath::virtualize(&root, path)?)
+                .intern()
+        } else if matches!(input, Some(Input::Stdin)) {
+            // Return the special id of STDIN.
+            *STDIN_ID
+        } else {
+            // Return the special id of EMPTY/no input at all otherwise.
+            *EMPTY_ID
+        };
+
+        Ok(Self {
+            main,
+            project: FsRoot::new(root),
+            packages: crate::packages::system(&world_args.package),
+        })
     }
 
-    /// Retrieve the file's bytes.
-    fn file(
-        &mut self,
-        project_root: &Path,
-        package_storage: &PackageStorage,
-    ) -> FileResult<Bytes> {
-        self.file.get_or_init(
-            || read(self.id, project_root, package_storage),
-            |data, _| Ok(Bytes::new(data)),
-        )
+    /// Resolves the file system path for the given `id`.
+    pub fn resolve(&self, id: FileId) -> FileResult<PathBuf> {
+        Ok(self.root(id)?.resolve(id.vpath()))
+    }
+
+    /// Resolves the root in which the given file ID resides.
+    fn root(&self, id: FileId) -> FileResult<FsRoot> {
+        Ok(match id.root() {
+            VirtualRoot::Project => self.project.clone(),
+            VirtualRoot::Package(spec) => self.packages.obtain(spec)?,
+        })
     }
 }
 
-/// Lazily processes data for a file.
-struct SlotCell<T> {
-    /// The processed data.
-    data: Option<FileResult<T>>,
-    /// A hash of the raw file contents / access error.
-    fingerprint: u128,
-    /// Whether the slot has been accessed in the current compilation.
-    accessed: bool,
-}
-
-impl<T: Clone> SlotCell<T> {
-    /// Creates a new, empty cell.
-    fn new() -> Self {
-        Self { data: None, fingerprint: 0, accessed: false }
-    }
-
-    /// Whether the cell was accessed in the ongoing compilation.
-    fn accessed(&self) -> bool {
-        self.accessed
-    }
-
-    /// Marks the cell as not yet accessed in preparation of the next
-    /// compilation.
-    fn reset(&mut self) {
-        self.accessed = false;
-    }
-
-    /// Gets the contents of the cell.
-    fn get(&self) -> Option<&FileResult<T>> {
-        self.data.as_ref()
-    }
-
-    /// Gets the contents of the cell or initialize them.
-    fn get_or_init(
-        &mut self,
-        load: impl FnOnce() -> FileResult<Vec<u8>>,
-        f: impl FnOnce(Vec<u8>, Option<T>) -> FileResult<T>,
-    ) -> FileResult<T> {
-        // If we accessed the file already in this compilation, retrieve it.
-        if mem::replace(&mut self.accessed, true)
-            && let Some(data) = &self.data
-        {
-            return data.clone();
+impl FileLoader for SystemFiles {
+    fn load(&self, id: FileId) -> FileResult<Bytes> {
+        if id == *EMPTY_ID {
+            Ok(Bytes::new([]))
+        } else if id == *STDIN_ID {
+            read_from_stdin().map(Bytes::new)
+        } else {
+            self.root(id)?.load(id.vpath())
         }
-
-        // Read and hash the file.
-        let result = timed!("loading file", load());
-        let fingerprint = timed!("hashing file", typst::utils::hash128(&result));
-
-        // If the file contents didn't change, yield the old processed data.
-        if mem::replace(&mut self.fingerprint, fingerprint) == fingerprint
-            && let Some(data) = &self.data
-        {
-            return data.clone();
-        }
-
-        let prev = self.data.take().and_then(Result::ok);
-        let value = result.and_then(|data| f(data, prev));
-        self.data = Some(value.clone());
-
-        value
-    }
-}
-
-/// Discovers the fonts as specified by the CLI flags.
-#[typst_macros::time(name = "scan fonts")]
-fn scan_fonts(args: &FontArgs) -> Fonts {
-    let mut fonts = Fonts::searcher();
-    fonts.include_system_fonts(!args.ignore_system_fonts);
-    #[cfg(feature = "embed-fonts")]
-    fonts.include_embedded_fonts(!args.ignore_embedded_fonts);
-    fonts.search_with(&args.font_paths)
-}
-
-/// Resolves the path of a file id on the system, downloading a package if
-/// necessary.
-fn system_path(
-    project_root: &Path,
-    id: FileId,
-    package_storage: &PackageStorage,
-) -> FileResult<PathBuf> {
-    // Determine the root path relative to which the file path will be resolved.
-    let buf;
-    let root = match id.root() {
-        VirtualRoot::Project => project_root,
-        VirtualRoot::Package(spec) => {
-            buf = package_storage.prepare_package(spec, &mut PrintDownload(&spec))?;
-            &buf
-        }
-    };
-    Ok(id.vpath().realize(root))
-}
-
-/// Reads a file from a `FileId`.
-///
-/// - If the ID represents stdin it will read from standard input.
-/// - If it represents empty/no input at all it will return an empty vector.
-/// - Otherwise, it gets the file path of the ID and reads the file from disk.
-fn read(
-    id: FileId,
-    project_root: &Path,
-    package_storage: &PackageStorage,
-) -> FileResult<Vec<u8>> {
-    match id {
-        id if id == *EMPTY_ID => Ok(Vec::new()),
-        id if id == *STDIN_ID => read_from_stdin(),
-        _ => read_from_disk(&system_path(project_root, id, package_storage)?),
-    }
-}
-
-/// Read a file from disk.
-fn read_from_disk(path: &Path) -> FileResult<Vec<u8>> {
-    let f = |e| FileError::from_io(e, path);
-    if fs::metadata(path).map_err(f)?.is_dir() {
-        Err(FileError::IsDirectory)
-    } else {
-        fs::read(path).map_err(f)
     }
 }
 
@@ -498,12 +326,6 @@ fn read_from_stdin() -> FileResult<Vec<u8>> {
         Err(err) => return Err(FileError::from_io(err, Path::new("<stdin>"))),
     }
     Ok(buf)
-}
-
-/// Decode UTF-8 with an optional BOM.
-fn decode_utf8(buf: &[u8]) -> FileResult<&str> {
-    // Remove UTF-8 BOM.
-    Ok(std::str::from_utf8(buf.strip_prefix(b"\xef\xbb\xbf").unwrap_or(buf))?)
 }
 
 /// The current date and time.
