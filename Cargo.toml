@@ -60,7 +60,6 @@ fastrand = "2.3.0"
 flate2 = "1.1.8"
 fontdb = { version = "0.23.0", default-features = false }
 fs_extra = "1.3.0"
-rustc-hash = "2.1.1"
 glidesort = "0.1.2"
 hayagriva = "0.9.1"
 hayro = { version = "0.4.0", default-features = false }
@@ -85,7 +84,7 @@ krilla = { git = "https://github.com/LaurenzV/krilla", rev = "84c6332", default-
 krilla-svg = { git = "https://github.com/LaurenzV/krilla", rev = "84c6332" }
 kurbo = "0.13.0"
 libfuzzer-sys = "0.4.10"
-libm = "0.2.11"
+libm = "0.2.15"
 lipsum = "0.9.1"
 memchr = "2.7.6"
 native-tls = "0.2.14"
@@ -101,7 +100,7 @@ phf = { version = "0.13.1", features = ["macros"] }
 pixglyph = "0.6.0"
 png = "0.17.16"
 portable-atomic = "1.13.0"
-proc-macro2 = "1.0.105"
+proc-macro2 = "1.0.106"
 pulldown-cmark = "0.13.0"
 pulldown-cmark-escape = "0.11.0"
 qcms = "0.3.0"
@@ -112,6 +111,7 @@ regex-syntax = "0.8.8"
 resvg = { version = "0.45.1", default-features = false, features = ["raster-images"] }
 roxmltree = "0.20.0"
 rust_decimal = { version = "1.40.0", default-features = false, features = ["maths"] }
+rustc-hash = "2.1.1"
 rustybuzz = "0.20.1"
 ryu = "1.0.22"
 same-file = "1.0.6"
@@ -140,8 +140,8 @@ typed-arena = "2.0.2"
 unicode-bidi = "0.3.18"
 unicode-ident = "1.0.22"
 unicode-math-class = "0.1.0"
-unicode-script = "0.5.8"
 unicode-normalization = "0.1.25"
+unicode-script = "0.5.8"
 unicode-segmentation = "1.12.0"
 unscanny = "0.1.0"
 ureq = { version = "2.12.1", default-features = false, features = ["native-tls", "gzip", "json", "socks-proxy"] }
@@ -152,7 +152,7 @@ wasmi = { version = "1.0.7", default-features = false, features = ["simd"] }
 web-sys = "0.3.85"
 xmlwriter = "0.1.0"
 xz2 = { version = "0.1.7", features = ["static"] }
-zip = { version = "7.1.0", default-features = false, features = ["deflate"] }
+zip = { version = "7.2.0", default-features = false, features = ["deflate"] }
 
 [profile.dev.package."*"]
 opt-level = 2
