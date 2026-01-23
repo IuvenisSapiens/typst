@@ -18,9 +18,6 @@ use crate::pdftags;
 /// A map from a test name to the corresponding reference hash.
 #[derive(Default)]
 pub struct HashedRefs {
-    /// Whether a reference hash has been added/removed/updated and the hash
-    /// file on disk should be updated.
-    pub changed: bool,
     refs: IndexMap<EcoString, HashedRef, FxBuildHasher>,
 }
 
@@ -37,22 +34,17 @@ impl HashedRefs {
 
     /// Remove a reference hash.
     pub fn remove(&mut self, name: &str) {
-        self.changed = true;
         self.refs.shift_remove(name);
     }
 
     /// Update a reference hash.
     pub fn update(&mut self, name: EcoString, hashed_ref: HashedRef) {
-        self.changed = true;
         self.refs.insert(name, hashed_ref);
     }
 
     /// Sort the reference hashes lexicographically.
     pub fn sort(&mut self) {
-        if !self.refs.keys().is_sorted() {
-            self.changed = true;
-            self.refs.sort_keys();
-        }
+        self.refs.sort_keys();
     }
 
     /// The names of all tests in this map.
@@ -90,7 +82,7 @@ impl FromStr for HashedRefs {
                 Ok((name.into(), hash))
             })
             .collect::<StrResult<IndexMap<_, _, _>>>()?;
-        Ok(HashedRefs { changed: false, refs })
+        Ok(HashedRefs { refs })
     }
 }
 
@@ -138,6 +130,9 @@ pub trait OutputType: Sized {
 
     /// Converts the live output to bytes that can be saved to disk.
     fn save_live(doc: &Self::Doc, live: &Self::Live) -> impl AsRef<[u8]>;
+
+    /// Produce a hash from the live output.
+    fn make_hash(live: &Self::Live) -> HashedRef;
 }
 
 /// An output type that produces file references.
@@ -151,11 +146,8 @@ pub trait FileOutputType: OutputType {
 
 /// An output type that produces hashed references.
 pub trait HashOutputType: OutputType {
-    /// The index into the [`crate::run::HASHES`] array.
+    /// The index into the shared `hashes` array.
     const INDEX: usize;
-
-    /// Produces the reference output from the live output.
-    fn make_hash(live: &Self::Live) -> HashedRef;
 }
 
 pub struct Render;
@@ -185,6 +177,10 @@ impl OutputType for Render {
             pixmap_live = &slot;
         }
         pixmap_live.encode_png().unwrap()
+    }
+
+    fn make_hash(live: &Self::Live) -> HashedRef {
+        HashedRef(typst_utils::hash128(live.data()))
     }
 }
 
@@ -225,14 +221,14 @@ impl OutputType for Pdf {
     fn save_live(_: &Self::Doc, live: &Self::Live) -> impl AsRef<[u8]> {
         live
     }
-}
-
-impl HashOutputType for Pdf {
-    const INDEX: usize = 0;
 
     fn make_hash(live: &Self::Live) -> HashedRef {
         HashedRef(typst_utils::hash128(live))
     }
+}
+
+impl HashOutputType for Pdf {
+    const INDEX: usize = 0;
 }
 
 fn generate_pdf(
@@ -262,6 +258,10 @@ impl OutputType for Pdftags {
 
     fn save_live(_: &Self::Doc, live: &Self::Live) -> impl AsRef<[u8]> {
         live
+    }
+
+    fn make_hash(live: &Self::Live) -> HashedRef {
+        HashedRef(typst_utils::hash128(live))
     }
 }
 
@@ -294,14 +294,14 @@ impl OutputType for Svg {
     fn save_live(_: &Self::Doc, live: &Self::Live) -> impl AsRef<[u8]> {
         live
     }
-}
-
-impl HashOutputType for Svg {
-    const INDEX: usize = 1;
 
     fn make_hash(live: &Self::Live) -> HashedRef {
         HashedRef(typst_utils::hash128(live))
     }
+}
+
+impl HashOutputType for Svg {
+    const INDEX: usize = 1;
 }
 
 pub struct Html;
@@ -322,6 +322,10 @@ impl OutputType for Html {
 
     fn save_live(_: &Self::Doc, live: &Self::Live) -> impl AsRef<[u8]> {
         live
+    }
+
+    fn make_hash(live: &Self::Live) -> HashedRef {
+        HashedRef(typst_utils::hash128(live))
     }
 }
 

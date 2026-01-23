@@ -18,7 +18,7 @@ use typst_syntax::{
 };
 use unscanny::Scanner;
 
-use crate::output::HashedRefs;
+use crate::output::{self, HashOutputType, HashedRefs};
 use crate::world::TestFiles;
 use crate::{ARGS, REF_PATH, STORE_PATH, SUITE_PATH};
 
@@ -27,7 +27,7 @@ use crate::{ARGS, REF_PATH, STORE_PATH, SUITE_PATH};
 /// Returns:
 /// - the tests and the number of skipped tests in the success case.
 /// - parsing errors in the failure case.
-pub fn collect() -> Result<(Vec<Test>, usize), Vec<TestParseError>> {
+pub fn collect() -> Result<([HashedRefs; 2], Vec<Test>, usize), Vec<TestParseError>> {
     Collector::new().collect()
 }
 
@@ -296,7 +296,14 @@ impl TestOutput {
         }
     }
 
-    /// The path at which the live output will be stored for inspection.
+    /// The path at which the live output will be stored.
+    pub fn hash_path(&self, hash: impl Display, name: &str) -> PathBuf {
+        let ext = self.extension();
+        PathBuf::from(format!("{STORE_PATH}/by-hash/{hash}_{name}.{ext}"))
+    }
+
+    /// The path at which a symlink to the [`Self::hash_path`] will be created
+    /// for inspection.
     pub fn live_path(&self, name: &str) -> PathBuf {
         let dir = self.sub_dir();
         let ext = self.extension();
@@ -311,21 +318,19 @@ impl TestOutput {
     }
 
     /// The path at which hashed references will be saved.
-    pub fn hashed_ref_path(self, source_path: &Path) -> PathBuf {
-        let sub_dir = self.sub_dir();
-        let sub_path = source_path.strip_prefix(SUITE_PATH).unwrap();
-        let trimmed_path = sub_path.to_str().unwrap().strip_suffix(".typ");
-        let file_name = trimmed_path.unwrap().replace("/", "-");
-        PathBuf::from(format!("{REF_PATH}/{sub_dir}/{file_name}.txt"))
+    pub fn hash_refs_path(self) -> PathBuf {
+        let dir = self.sub_dir();
+        PathBuf::from(format!("{REF_PATH}/{dir}/hashes.txt"))
     }
 
     /// The output kind.
-    fn kind(&self) -> TestOutputKind {
+    pub fn kind(&self) -> TestOutputKind {
         match self {
             TestOutput::Render | TestOutput::Pdftags | TestOutput::Html => {
                 TestOutputKind::File
             }
-            TestOutput::Pdf | TestOutput::Svg => TestOutputKind::Hash,
+            TestOutput::Pdf => TestOutputKind::Hash(output::Pdf::INDEX),
+            TestOutput::Svg => TestOutputKind::Hash(output::Svg::INDEX),
         }
     }
 }
@@ -345,8 +350,8 @@ impl Display for TestOutput {
 }
 
 /// Whether the output format produces hashed or file references.
-enum TestOutputKind {
-    Hash,
+pub enum TestOutputKind {
+    Hash(usize),
     File,
 }
 
@@ -402,6 +407,7 @@ impl Display for NoteKind {
 
 /// Collects all tests from all files.
 struct Collector {
+    hashes: [HashedRefs; 2],
     tests: Vec<Test>,
     errors: Vec<TestParseError>,
     seen: FxHashMap<EcoString, (FilePos, Attrs)>,
@@ -412,6 +418,7 @@ impl Collector {
     /// Creates a new test collector.
     fn new() -> Self {
         Self {
+            hashes: std::array::from_fn(|_| HashedRefs::default()),
             tests: vec![],
             errors: vec![],
             seen: FxHashMap::default(),
@@ -420,12 +427,14 @@ impl Collector {
     }
 
     /// Collects tests from all files.
-    fn collect(mut self) -> Result<(Vec<Test>, usize), Vec<TestParseError>> {
+    fn collect(
+        mut self,
+    ) -> Result<([HashedRefs; 2], Vec<Test>, usize), Vec<TestParseError>> {
         self.walk_files();
         self.walk_references();
 
         if self.errors.is_empty() {
-            Ok((self.tests, self.skipped))
+            Ok((self.hashes, self.tests, self.skipped))
         } else {
             Err(self.errors)
         }
@@ -433,7 +442,7 @@ impl Collector {
 
     /// Walks through all test files and collects the tests.
     fn walk_files(&mut self) {
-        for entry in walkdir::WalkDir::new(crate::SUITE_PATH).sort_by_file_name() {
+        for entry in walkdir::WalkDir::new(SUITE_PATH).sort_by_file_name() {
             let entry = entry.unwrap();
             let path = entry.path();
             if path.extension().is_none_or(|ext| ext != "typ") {
@@ -452,25 +461,27 @@ impl Collector {
     /// Walks through all reference outputs and ensures that a matching test
     /// exists.
     fn walk_references(&mut self) {
-        for entry in walkdir::WalkDir::new(crate::REF_PATH).sort_by_file_name() {
+        for entry in walkdir::WalkDir::new(REF_PATH).sort_by_file_name() {
             let entry = entry.unwrap();
-            if !entry.file_type().is_file() {
+            if entry.file_type().is_dir() {
                 continue;
             }
 
             let path = entry.path();
-            let sub_path = path.strip_prefix(crate::REF_PATH).unwrap();
-            let sub_dir = sub_path.components().next().unwrap();
-            let Some(output) =
-                TestOutput::from_sub_dir(sub_dir.as_os_str().to_str().unwrap())
-            else {
-                continue;
-            };
+            let output = (path.strip_prefix(REF_PATH).ok())
+                .and_then(|sub_path| sub_path.components().next())
+                .and_then(|sub_dir| sub_dir.as_os_str().to_str())
+                .and_then(TestOutput::from_sub_dir);
+            let Some(output) = output else { continue };
 
             match output.kind() {
                 TestOutputKind::File => self.check_dangling_file_references(path, output),
-                TestOutputKind::Hash => {
-                    self.check_dangling_hashed_references(path, output)
+                TestOutputKind::Hash(idx) => {
+                    if let Some(hashed_refs) =
+                        self.check_dangling_hashed_references(path, output)
+                    {
+                        self.hashes[idx] = hashed_refs;
+                    }
                 }
             }
         }
@@ -481,83 +492,77 @@ impl Collector {
         let name = &*stem;
 
         let Some((pos, attrs)) = self.seen.get(name) else {
-            self.errors.push(TestParseError {
-                pos: FilePos::new(path, 0),
-                message: "dangling reference output".into(),
-            });
+            self.errors.push(TestParseError::new(
+                FilePos::new(path, 0),
+                TestParseErrorKind::DanglingFile,
+            ));
             return;
         };
 
         if !attrs.stages.contains(output.into()) {
-            self.errors.push(TestParseError {
-                pos: FilePos::new(path, 0),
-                message: "dangling reference output".into(),
-            });
+            self.errors.push(TestParseError::new(
+                FilePos::new(path, 0),
+                TestParseErrorKind::DanglingFile,
+            ));
         }
 
         let len = path.metadata().unwrap().len() as usize;
         if !attrs.large && len > crate::REF_LIMIT {
-            self.errors.push(TestParseError {
-                pos: pos.clone(),
-                message: format!(
+            self.errors.push(TestParseError::new(
+                pos.clone(),
+                format!(
                     "reference output size exceeds {}, but the test is not marked as `large`",
                     FileSize(crate::REF_LIMIT),
                 ),
-            });
+            ));
         }
     }
 
-    fn check_dangling_hashed_references(&mut self, path: &Path, output: TestOutput) {
-        let string = std::fs::read_to_string(path).unwrap_or_default();
-        let Ok(hashed_refs) = HashedRefs::from_str(&string) else { return };
-        if hashed_refs.is_empty() {
-            self.errors.push(TestParseError {
-                pos: FilePos::new(path, 0),
-                message: "dangling empty reference hash file".into(),
-            });
+    fn check_dangling_hashed_references(
+        &mut self,
+        path: &Path,
+        output: TestOutput,
+    ) -> Option<HashedRefs> {
+        let path = path.to_str().unwrap().replace('\\', "/");
+        let path = Path::new(&path);
+
+        if output.hash_refs_path() != path {
+            self.errors.push(TestParseError::new(
+                FilePos::new(path, 0),
+                TestParseErrorKind::DanglingFile,
+            ));
+            return None;
         }
 
-        let mut right_file = 0;
-        let mut wrong_file = Vec::new();
-        for (line, name) in hashed_refs.names().enumerate() {
-            let Some((pos, attrs)) = self.seen.get(name) else {
-                self.errors.push(TestParseError {
-                    pos: FilePos::new(path, line),
-                    message: format!("dangling reference hash ({name})"),
-                });
+        let string = std::fs::read_to_string(path).unwrap_or_default();
+        let hashed_refs = HashedRefs::from_str(&string)
+            .inspect_err(|err| {
+                self.errors.push(TestParseError::new(
+                    FilePos::new(path, 0),
+                    format!("error parsing reference hash file: {err}"),
+                ));
+            })
+            .ok()?;
+
+        for (name, line) in hashed_refs.names().zip(1..) {
+            let Some((_, attrs)) = self.seen.get(name) else {
+                self.errors.push(TestParseError::new(
+                    FilePos::new(path, line),
+                    TestParseErrorKind::DanglingHash(name.clone()),
+                ));
                 continue;
             };
 
             if !attrs.stages.contains(output.into()) {
-                self.errors.push(TestParseError {
-                    pos: FilePos::new(path, line),
-                    message: format!("dangling reference hash ({name})"),
-                });
+                self.errors.push(TestParseError::new(
+                    FilePos::new(path, line),
+                    TestParseErrorKind::DanglingHash(name.clone()),
+                ));
                 continue;
             }
-
-            if output.hashed_ref_path(&pos.path) == path {
-                right_file += 1;
-            } else {
-                wrong_file.push((line, name));
-            }
         }
 
-        if !wrong_file.is_empty() {
-            if right_file == 0 {
-                self.errors.push(TestParseError {
-                    pos: FilePos::new(path, 0),
-                    message: "dangling reference hash file".into(),
-                });
-            } else {
-                for (line, name) in wrong_file {
-                    self.errors.push(TestParseError {
-                        pos: FilePos::new(path, line),
-                        message: format!("dangling reference hash ({name})"),
-                    });
-                }
-            }
-        }
+        Some(hashed_refs)
     }
 }
 
@@ -892,10 +897,9 @@ impl<'a> Parser<'a> {
 
     /// Stores a test parsing error.
     fn error(&mut self, message: impl Into<String>) {
-        self.collector.errors.push(TestParseError {
-            pos: FilePos::new(self.path, self.line),
-            message: message.into(),
-        });
+        self.collector
+            .errors
+            .push(TestParseError::new(FilePos::new(self.path, self.line), message));
     }
 }
 
@@ -929,12 +933,43 @@ fn selected(name: &str, abs: PathBuf) -> bool {
 /// An error in a test file.
 pub struct TestParseError {
     pub pos: FilePos,
-    pub message: String,
+    pub kind: TestParseErrorKind,
+}
+
+impl TestParseError {
+    pub fn new(pos: FilePos, kind: impl Into<TestParseErrorKind>) -> Self {
+        Self { pos, kind: kind.into() }
+    }
 }
 
 impl Display for TestParseError {
     fn fmt(&self, f: &mut Formatter) -> fmt::Result {
-        write!(f, "{} ({})", self.message, self.pos)
+        write!(f, "{} ({})", self.kind, self.pos)
+    }
+}
+
+/// The kind of error that occurred when collecting tests.
+pub enum TestParseErrorKind {
+    DanglingFile,
+    DanglingHash(EcoString),
+    Other(String),
+}
+
+impl<S: Into<String>> From<S> for TestParseErrorKind {
+    fn from(v: S) -> Self {
+        Self::Other(v.into())
+    }
+}
+
+impl Display for TestParseErrorKind {
+    fn fmt(&self, f: &mut Formatter) -> fmt::Result {
+        match self {
+            TestParseErrorKind::DanglingFile => f.write_str("dangling reference file"),
+            TestParseErrorKind::DanglingHash(name) => {
+                write!(f, "dangling reference hash ({name})")
+            }
+            TestParseErrorKind::Other(message) => f.write_str(message),
+        }
     }
 }
 
