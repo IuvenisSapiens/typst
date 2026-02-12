@@ -7,7 +7,7 @@ use pulldown_cmark as md;
 use serde::{Deserialize, Serialize};
 use typed_arena::Arena;
 use typst::diag::{FileError, FileResult, StrResult};
-use typst::foundations::{Bytes, Datetime};
+use typst::foundations::{Bytes, Datetime, Duration};
 use typst::layout::{Abs, PagedDocument, Point, Size};
 use typst::syntax::{FileId, RootedPath, Source, VirtualPath, VirtualRoot};
 use typst::text::{Font, FontBook};
@@ -551,11 +551,11 @@ impl World for DocWorld {
         FONTS.1.get(index).cloned()
     }
 
-    fn today(&self, _: Option<i64>) -> Option<Datetime> {
+    fn today(&self, _: Option<Duration>) -> Option<Datetime> {
         Some(Datetime::from_ymd(1970, 1, 1).unwrap())
     }
 
-    fn now(&self, _: Option<i64>) -> Option<Datetime> {
+    fn now(&self, _: Option<Duration>) -> Option<Datetime> {
         Some(Datetime::from_ymd_hms(1970, 1, 1, 0, 0, 0).unwrap())
     }
 }

@@ -990,6 +990,7 @@ e8d812e8211e884238df314992db0d2d math-attach-kerning-mixed
 1faea4ab2fa0ed56bd56393e07ee2043 math-attach-mixed
 5c675003241e27c125ba12cde2bbfda5 math-attach-nested
 daa8ce444236a701cdf9bf5f74cb08ec math-attach-nested-base
+1ed090bfe9a0a4606d4bf08338ee6184 math-attach-nested-base-bad-placement
 546f2fdc7c346dba07a85cb02594a5a4 math-attach-nested-deep-base
 79cd3f10cb464b2bd5583a8a72607d8e math-attach-postscripts
 e120f62f76c1a20a4f33805cfc842753 math-attach-prescripts
@@ -1159,6 +1160,9 @@ a39f6291cfd58ec7f59349ea037eae35 math-primes-attach
 f8d4ad248d034d90e322b8be9592c4d0 math-primes-complex
 636b58d40ac5d7529bf2ae3c86c22278 math-primes-factorial
 26c1cd94f79b4c13bff3bb863cefec81 math-primes-limits
+0739e8faef37de1867aa6dab65f910e1 math-primes-merge-inner-prime
+908806657fd03009d1616d8d157e46d5 math-primes-merge-top
+a7be25224113db91927c20e92ffe4594 math-primes-merge-top-nested
 3b852deffd75c03cdc35f1f4bc31d056 math-primes-scripts
 d3ef8e83ad9047588a3df051ad4c55dd math-primes-show-rule
 6f627c97cc410a10d88cda3d544faaf1 math-primes-spaces
@@ -1334,6 +1338,7 @@ dc75173639f8bc8d33aca73bdafefc98 par-first-line-indent-all
 47662d08d750c765853e83b944826c50 par-first-line-indent-all-enum
 0a3307f7a31d77a5d4e9b148304b7555 par-first-line-indent-all-list
 d90cb42979db5cff7e46ef432c6feb60 par-first-line-indent-all-terms
+2b18db37d8abaf4dd2935e4b1b9d472c par-first-line-indent-columns
 af68509ff8cd974c0099b1c17365e87d par-hanging-indent
 6bf006358d56562890ffcaf58787dc30 par-hanging-indent-manual-linebreak
 d0a54239f56b51f69438f1188cce0eb6 par-hanging-indent-rtl
@@ -1726,6 +1731,8 @@ d1ec9b4e74e627ff220c997e676b0dd2 tiling-spacing-zero
 a8e4c9234e67e7efb01714392f6a1020 tiling-stroke-relative-parent
 32a35fc91ce489ef8e85d777d704dcf8 tiling-text
 f3dc8bd7853bee4509a10494a4c93859 tiling-text-fill
+1804c6fece7420334b1dfd407f642eae tiling-with-different-size
+b6505fef6e5f17756522d78baa4103f0 tiling-with-different-spacing
 774e1191dd8b538dd4a247bda509752b title
 e1a28140e308d246294a7eb22fdf20ff title-show-set
 35487ad39e1312c3f2b9f42f6d306537 title-with-body
