@@ -1,5 +1,5 @@
 use typst::diag::{FileError, FileResult};
-use typst::foundations::{Bytes, Datetime};
+use typst::foundations::{Bytes, Datetime, Duration};
 use typst::syntax::{FileId, Source};
 use typst::text::{Font, FontBook};
 use typst::utils::LazyHash;
@@ -55,11 +55,11 @@ impl World for FuzzWorld {
         Some(self.font.clone())
     }
 
-    fn today(&self, _: Option<i64>) -> Option<Datetime> {
+    fn today(&self, _: Option<Duration>) -> Option<Datetime> {
         None
     }
-    
-    fn now(&self, _: Option<i64>) -> Option<Datetime> {
+
+    fn now(&self, _: Option<Duration>) -> Option<Datetime> {
         None
     }
 }
