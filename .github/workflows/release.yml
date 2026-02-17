@@ -44,7 +44,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v6.0.1
-    - uses: dtolnay/rust-toolchain@1.93.0
+    - uses: dtolnay/rust-toolchain@1.93.1
       with:
         target: ${{ matrix.target }}
 
