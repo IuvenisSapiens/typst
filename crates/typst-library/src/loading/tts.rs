@@ -1,7 +1,7 @@
 use crate::diag::SourceResult;
 use crate::foundations::{Value, func};
 use kokoro_tts::{KokoroTts, Voice};
-use rodio::{OutputStreamBuilder, Sink, buffer::SamplesBuffer, Source};
+use rodio::{DeviceSinkBuilder, Player, buffer::SamplesBuffer, Source};
 use std::sync::Arc;
 use typst_syntax::Spanned;
 use crate::diag::SourceDiagnostic;
@@ -48,10 +48,6 @@ pub fn tts(
     let tts_clone = Arc::clone(&tts);
     let text_clone = text.clone();
 
-    let output_stream_builder = OutputStreamBuilder::from_default_device().unwrap();
-    let output_stream = output_stream_builder.open_stream().unwrap();
-    let stream_handle = output_stream.mixer();
-    let sink = Sink::connect_new(&stream_handle);
 
     let voice_enum = match voice.as_str() {
         "AfMaple" => Voice::AfMaple(1),
@@ -168,14 +164,26 @@ pub fn tts(
         .unwrap()
         .block_on(tts_clone.synth(&text_clone, voice_enum))
         .unwrap();
-    let samples_buffer = SamplesBuffer::new(1, 24000, audio);
-    // Adjust the volume and speed of the audio
+    // Build the samples buffer with proper non-zero channel & rate values.
+    use std::num::{NonZeroU16, NonZeroU32};
+    let samples_buffer = SamplesBuffer::new(
+        NonZeroU16::new(1).unwrap(),
+        NonZeroU32::new(24000).unwrap(),
+        audio,
+    );
+
+    // Apply playback filters for volume and speed
     let amplified_samples_buffer = samples_buffer.amplify(volume as f32);
     let speed_samples_buffer = amplified_samples_buffer.speed(speed as f32);
+
+    // Open device sink and player
+    let handle = DeviceSinkBuilder::open_default_sink().unwrap();
+    let player = Player::connect_new(&handle.mixer());
+
     for _ in 0..count {
-        sink.append(speed_samples_buffer.clone());
+        player.append(speed_samples_buffer.clone());
     }
 
-    sink.sleep_until_end();
+    player.sleep_until_end();
     Ok(Value::None)
 }

@@ -3,7 +3,7 @@ use crate::diag::{LoadError, LoadedWithin, SourceResult};
 use crate::engine::Engine;
 use crate::foundations::{Value, func};
 use crate::loading::{DataSource, Load};
-use rodio::{Decoder, OutputStreamBuilder, Sink, Source};
+use rodio::{Decoder, DeviceSinkBuilder, Player, Source};
 use std::f64;
 
 /// Play an audio file (mp3, wav, etc).
@@ -36,20 +36,20 @@ pub fn audio(
 
 
 fn play_audio_from_bytes(bytes: &[u8], volume: f32, speed: f32) -> Result<(), rodio::decoder::DecoderError> {
-    let output_stream_builder = OutputStreamBuilder::from_default_device().map_err(|e| rodio::decoder::DecoderError::IoError(format!("OutputStreamBuilder error: {e}")))?;
-    let output_stream = output_stream_builder.open_stream().map_err(|e| rodio::decoder::DecoderError::IoError(format!("OutputStream error: {e}")))?;
+    // Open the default device sink and attach a player for playback.
+    let handle = DeviceSinkBuilder::open_default_sink()
+        .map_err(|e| rodio::decoder::DecoderError::IoError(format!("DeviceSinkBuilder error: {e}")))?;
+    let player = Player::connect_new(&handle.mixer());
 
-    let stream_handle = output_stream.mixer();
-    let sink = Sink::connect_new(&stream_handle);
     let cursor = std::io::Cursor::new(bytes.to_vec());
     let source = Decoder::new(cursor)?;
 
-    // Create a new sink with the adjusted volume and speed
+    // Apply filters for volume and speed
     let amplified_source = source.amplify(volume);
     let speed_source = amplified_source.speed(speed);
 
-    sink.append(speed_source);
-    sink.sleep_until_end();
+    player.append(speed_source);
+    player.sleep_until_end();
     Ok(())
 }
 
