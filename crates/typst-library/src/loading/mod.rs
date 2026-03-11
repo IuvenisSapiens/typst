@@ -14,10 +14,6 @@ mod toml_;
 mod xml_;
 #[path = "yaml.rs"]
 mod yaml_;
-// #[path = "audio.rs"]
-// mod audio_;
-// #[path = "tts.rs"]
-// mod tts_;
 
 pub use self::cbor_::*;
 pub use self::csv_::*;
@@ -26,8 +22,6 @@ pub use self::read_::*;
 pub use self::toml_::*;
 pub use self::xml_::*;
 pub use self::yaml_::*;
-// pub use self::audio_::*;
-// pub use self::tts_::*;
 
 use comemo::Tracked;
 use typst_syntax::{FileId, Spanned};
@@ -46,8 +40,6 @@ pub(super) fn define(global: &mut Scope) {
     global.define_func::<yaml>();
     global.define_func::<cbor>();
     global.define_func::<xml>();
-    // global.define_func::<audio>();
-    // global.define_func::<tts>();
     global.reset_category();
 }
 
