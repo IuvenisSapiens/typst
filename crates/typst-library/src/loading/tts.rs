@@ -14,10 +14,11 @@ use crate::diag::SourceDiagnostic;
 /// * `speed` - The speed of the audio, where 1.0 is normal speed.
 /// * `count` - The number of times to play the audio.
 /// * `voice` - The voice to use for synthesis (default is "Zm064").
+/// * `save` - Optional file path to write the generated audio as a WAV file. If omitted, no file is written.
 ///
 /// # Example
 /// ```example
-/// tts("中國人民不信邪也不怕邪，不惹事也不怕事，任何外國不要指望我們會拿自己的核心利益做交易，不要指望我們會吞下損害我國主權、安全、發展利益的苦果！", volume: 1.0, speed: 1.0, count: 1, voice: "Zf001")
+/// tts("中國人民不信邪也不怕邪，不惹事也不怕事，任何外國不要指望我們會拿自己的核心利益做交易，不要指望我們會吞下損害我國主權、安全、發展利益的苦果！", volume: 1.0, speed: 1.0, count: 1, voice: "Zf001", save: "output.wav")
 /// ```
 #[func]
 pub fn tts(
@@ -34,6 +35,9 @@ pub fn tts(
     #[named]
     #[default("Zm064".to_string())]
     voice: String,
+    #[named]
+    #[default(None)]
+    save: Option<String>,
 ) -> SourceResult<Value> {
     let text = source.v;
     let tts = Arc::new(
@@ -175,6 +179,18 @@ pub fn tts(
     // Apply playback filters for volume and speed
     let amplified_samples_buffer = samples_buffer.amplify(volume as f32);
     let speed_samples_buffer = amplified_samples_buffer.speed(speed as f32);
+
+    // If user requested to save the audio, write a WAV file before playing.
+    if let Some(path) = save.as_deref() {
+        // using rodio's convenience helper (requires wav_output feature)
+        if let Err(e) = rodio::wav_to_file(speed_samples_buffer.clone(), path) {
+            return Err(ecow::EcoVec::from([SourceDiagnostic::error(
+                source.span,
+                format!("failed to write WAV file {}: {}", path, e),
+            )])
+            .into());
+        }
+    }
 
     // Open device sink and player
     let handle = DeviceSinkBuilder::open_default_sink().unwrap();
