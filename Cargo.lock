@@ -4228,6 +4228,28 @@ version = "0.14.2"
 source = "git+https://github.com/typst/typst-assets?rev=57a38ca#57a38ca98236748ad83c806a48096b281686a7de"
 
 [[package]]
+name = "typst-bundle"
+version = "0.14.2"
+dependencies = [
+ "comemo",
+ "ecow",
+ "either",
+ "indexmap",
+ "rayon",
+ "rustc-hash",
+ "typst-html",
+ "typst-layout",
+ "typst-library",
+ "typst-macros",
+ "typst-pdf",
+ "typst-render",
+ "typst-svg",
+ "typst-syntax",
+ "typst-timing",
+ "typst-utils",
+]
+
+[[package]]
 name = "typst-cli"
 version = "0.14.2"
 dependencies = [
@@ -4257,10 +4279,12 @@ dependencies = [
  "tempfile",
  "toml",
  "typst",
+ "typst-bundle",
  "typst-dev-assets",
  "typst-eval",
  "typst-html",
  "typst-kit",
+ "typst-layout",
  "typst-macros",
  "typst-pdf",
  "typst-render",
@@ -4296,6 +4320,7 @@ dependencies = [
  "typst",
  "typst-assets",
  "typst-dev-assets",
+ "typst-layout",
  "typst-render",
  "typst-utils",
  "unicode-math-class",
@@ -4329,6 +4354,7 @@ dependencies = [
  "typst",
  "typst-assets",
  "typst-html",
+ "typst-layout",
  "typst-pdf",
  "typst-render",
  "typst-svg",
@@ -4368,6 +4394,7 @@ dependencies = [
  "typst-dev-assets",
  "typst-eval",
  "typst-html",
+ "typst-layout",
  "unscanny",
 ]
 
@@ -4382,6 +4409,7 @@ dependencies = [
  "fastrand",
  "flate2",
  "fontdb",
+ "infer",
  "native-tls",
  "notify",
  "once_cell",
@@ -4534,6 +4562,7 @@ dependencies = [
  "serde",
  "smallvec",
  "typst-assets",
+ "typst-layout",
  "typst-library",
  "typst-macros",
  "typst-syntax",
@@ -4571,6 +4600,7 @@ dependencies = [
  "tiny-skia",
  "ttf-parser",
  "typst-assets",
+ "typst-layout",
  "typst-library",
  "typst-macros",
  "typst-timing",
@@ -4593,6 +4623,7 @@ dependencies = [
  "ryu",
  "ttf-parser",
  "typst-assets",
+ "typst-layout",
  "typst-library",
  "typst-macros",
  "typst-timing",
@@ -4641,14 +4672,17 @@ dependencies = [
  "serde_yaml",
  "similar",
  "smallvec",
+ "tar",
  "time",
  "tiny-skia",
  "typst",
  "typst-assets",
+ "typst-bundle",
  "typst-dev-assets",
  "typst-eval",
  "typst-html",
  "typst-kit",
+ "typst-layout",
  "typst-library",
  "typst-pdf",
  "typst-render",
