@@ -82,7 +82,7 @@ pub fn emit<'a>(
                 .collect(),
         );
 
-        term::emit(dest, &config, &files, &diag)?;
+        term::emit_to_write_style(dest, &config, &files, &diag)?;
 
         // Stacktrace-like helper diagnostics.
         if format == DiagnosticFormat::Human {
