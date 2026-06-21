@@ -49,6 +49,9 @@ png = { workspace = true }
 rayon = { workspace = true }
 regex = { workspace = true }
 regex-syntax = { workspace = true }
+kokoro-tts = { workspace = true }
+tokio = { workspace = true }
+rodio = { workspace = true }
 roxmltree = { workspace = true }
 rust_decimal = { workspace = true }
 rustc-hash = { workspace = true }

@@ -5,7 +5,7 @@ resolver = "2"
 
 [workspace.package]
 version = "0.15.0"
-rust-version = "1.92" # also change in ci.yml
+rust-version = "1.96" # also change in ci.yml
 authors = ["The Typst Project Developers"]
 edition = "2024"
 homepage = "https://typst.app"
@@ -33,124 +33,127 @@ typst-svg = { path = "crates/typst-svg", version = "0.15.0" }
 typst-syntax = { path = "crates/typst-syntax", version = "0.15.0" }
 typst-timing = { path = "crates/typst-timing", version = "0.15.0" }
 typst-utils = { path = "crates/typst-utils", version = "0.15.0" }
-typst-assets = { git = "https://github.com/typst/typst-assets", rev = "c0ae970" }
-typst-dev-assets = { git = "https://github.com/typst/typst-dev-assets", rev = "a2e29ed" }
-arrayvec = "0.7.4"
-az = "1.2"
-base64 = "0.22"
-bitflags = { version = "2.10", features = ["serde"] }
-bumpalo = { version = "3.15.4", features = ["boxed", "collections"] }
-bytemuck = "1"
-chrono = { version = "0.4.24", default-features = false, features = ["clock", "std"] }
-ciborium = "0.2.1"
-clap = { version = "4.4", features = ["derive", "env", "wrap_help"] }
-clap_complete = "4.2.1"
+typst-assets = "0.15.0"
+typst-dev-assets = { git = "https://github.com/typst/typst-dev-assets", tag = "v0.15.0" }
+arrayvec = "0.7.7"
+az = "1.3.0"
+base64 = "0.22.1"
+bitflags = { version = "2.13.0", features = ["serde"] }
+bumpalo = { version = "3.20.3", features = ["boxed", "collections"] }
+bytemuck = "1.25.0"
+chrono = { version = "0.4.45", default-features = false, features = ["clock", "std"] }
+ciborium = "0.2.2"
+clap = { version = "4.6.1", features = ["derive", "env", "wrap_help"] }
+clap_complete = "4.6.5"
 clap_mangen = { version = "0.3.0", features = ["env"] }
-codespan-reporting = "0.11"
+codespan-reporting = "0.13.1"
 codex = "0.3.0"
-color-print = "0.3.6"
+color-print = "0.3.7"
 comemo = "0.5.1"
-csv = "1"
-ctrlc = "3.4.1"
-dirs = "6"
-ecow = { version = "0.2.6", features = ["serde"] }
-either = "1"
-env_proxy = "0.4"
-fastrand = "2.3"
-flate2 = { version = "1", features = ["zlib-rs"] }
-fontdb = { version = "0.23", default-features = false }
-fs_extra = "1.3"
+csv = "1.4.0"
+ctrlc = "3.5.2"
+dirs = "6.0.0"
+ecow = { version = "0.3.0", features = ["serde"] }
+either = "1.16.0"
+env_proxy = "0.4.1"
+fastrand = "2.4.1"
+flate2 = { version = "1.1.9", features = ["zlib-rs"] }
+fontdb = { version = "0.23.0", default-features = false }
+fs_extra = "1.3.0"
 glidesort = "0.1.2"
 hayagriva = "0.10.1"
 hayro = { version = "0.7.1", default-features = false }
 hayro-svg = { version = "0.7.0", default-features = false }
 hayro-syntax = "0.7.2"
-heck = "0.5"
-hypher = "0.1.4"
+heck = "0.5.0"
+hypher = "0.1.7"
 icu_properties = { version = "2.2.0", features = ["serde"] }
 icu_provider = { version = "2.2.0", features = ["sync"] }
 icu_provider_blob = "2.2.0"
 icu_segmenter = { version = "2.2.0", features = ["serde"] }
-image = { version = "0.25.5", default-features = false, features = ["png", "jpeg", "gif", "webp"] }
-indexmap = { version = "2", features = ["serde", "rayon"] }
+image = { version = "0.25.10", default-features = false, features = ["png", "jpeg", "gif", "webp"] }
+indexmap = { version = "2.14.0", features = ["serde", "rayon"] }
 infer = { version = "0.19.0", default-features = false }
-itoa = "1"
-kamadak-exif = "0.6"
+itoa = "1.0.18"
+kamadak-exif = "0.6.1"
+kokoro-tts = { git = "https://github.com/IuvenisSapiens/kokoro.git", branch = "feat_json" }
+rodio = { version = "0.22.2", features = ["wav_output"] }
+tokio = { version = "1.52.3", features = ["full"] }
 krilla = { version = "0.8.2", default-features = false, features = ["raster-images", "comemo", "rayon", "pdf"] }
 krilla-svg = "0.8.1"
-kurbo = "0.13"
-libfuzzer-sys = "0.4"
-libm = "0.2.11"
-lipsum = "0.9"
-memchr = "2"
+kurbo = "0.13.1"
+libfuzzer-sys = "0.4.13"
+libm = "0.2.16"
+lipsum = "0.9.1"
+memchr = "2.8.2"
 moxcms = "0.8.1"
-native-tls = "0.2"
-notify = "8"
-once_cell = "1"
-open = "5.0.1"
-openssl = "0.10.80"
-oxipng = { version = "10", default-features = false, features = ["filetime", "parallel"] }
-palette = { version = "0.7.3", default-features = false, features = ["approx", "libm"] }
-parking_lot = "0.12.1"
-pathdiff = "0.2"
+native-tls = "0.2.18"
+notify = "8.2.0"
+once_cell = "1.21.4"
+open = "5.3.5"
+openssl = "0.10.81"
+oxipng = { version = "10.0.0", default-features = false, features = ["filetime", "parallel"] }
+palette = { version = "0.7.6", default-features = false, features = ["approx", "libm"] }
+parking_lot = "0.12.5"
+pathdiff = "0.2.3"
 percent-encoding = "2.3.2"
-phf = { version = "0.13", features = ["macros"] }
+phf = { version = "0.14.0", features = ["macros"] }
 pixglyph = "0.6.1"
-png = "0.18"
-portable-atomic = "1.6"
-proc-macro2 = "1"
-quote = "1"
-rayon = "1.7.0"
-regex = "1"
-regex-syntax = "0.8"
-resvg = { version = "0.47", default-features = false, features = ["raster-images"] }
-roxmltree = "0.21"
-rust_decimal = { version = "1.36.0", default-features = false, features = ["maths"] }
-rustc-hash = "2.1"
-rustybuzz = "0.20"
-ryu = "1"
-same-file = "1"
-self-replace = "1.3.7"
-semver = "1"
-serde = { version = "1.0.184", features = ["derive"] }
-serde_json = "1"
-serde_yaml = "0.9"
+png = "0.18.1"
+portable-atomic = "1.13.1"
+proc-macro2 = "1.0.106"
+quote = "1.0.45"
+rayon = "1.12.0"
+regex = "1.12.4"
+regex-syntax = "0.8.11"
+resvg = { version = "0.47.0", default-features = false, features = ["raster-images"] }
+roxmltree = "0.21.1"
+rust_decimal = { version = "1.42.1", default-features = false, features = ["maths"] }
+rustc-hash = "2.1.2"
+rustybuzz = "0.20.1"
+ryu = "1.0.23"
+same-file = "1.0.6"
+self-replace = "1.5.0"
+semver = "1.0.28"
+serde = { version = "1.0.228", features = ["derive"] }
+serde_json = "1.0.150"
+serde_yaml = "0.9.34"
 shell-escape = "0.1.5"
-sigpipe = "0.1"
-similar = { version = "3.1.0", features = ["inline", "unicode"] }
-siphasher = "1"
-smallvec = { version = "1.11.1", features = ["union", "const_generics", "const_new"] }
-stacker = "0.1.19"
-syn = { version = "2", features = ["full", "extra-traits"] }
-syntect = { version = "5.3", default-features = false, features = ["parsing", "regex-fancy", "plist-load", "yaml-load"] }
+sigpipe = "0.1.3"
+similar = { version = "3.1.1", features = ["inline", "unicode"] }
+siphasher = "1.0.3"
+smallvec = { version = "1.15.2", features = ["union", "const_generics", "const_new"] }
+stacker = "0.1.24"
+syn = { version = "2.0.118", features = ["full", "extra-traits"] }
+syntect = { version = "5.3.0", default-features = false, features = ["parsing", "regex-fancy", "plist-load", "yaml-load"] }
 tar = "0.4.46"
-tempfile = "3.7.0"
+tempfile = "3.27.0"
 thin-vec = "0.2.18"
-time = { version = "0.3.20", features = ["formatting", "macros", "parsing"] }
-tiny_http = "0.12"
-tiny-skia = "0.12"
-toml = { version = "0.8", default-features = false, features = ["parse", "display"] }
-ttf-parser = "0.25.0"
-two-face = { version = "0.4.3", default-features = false, features = ["syntect-fancy"] }
-typed-arena = "2"
-unicode_names2 = "2"
+time = { version = "0.3.49", features = ["formatting", "macros", "parsing"] }
+tiny_http = "0.12.0"
+tiny-skia = "0.12.0"
+toml = { version = "0.9.8", default-features = false, features = ["parse", "display", "serde"] }
+ttf-parser = "0.25.1"
+two-face = { version = "0.5.1", default-features = false, features = ["syntect-fancy"] }
+typed-arena = "2.0.2"
+unicode_names2 = "3.1.0"
 unicode-bidi = "0.3.18"
-unicode-ident = "1.0"
-unicode-math-class = "0.1"
-unicode-normalization = "0.1.24"
-unicode-script = "0.5"
-unicode-segmentation = "1"
-unscanny = "0.1"
-ureq = { version = "2", default-features = false, features = ["native-tls", "gzip", "json"] }
-url = "2.5"
-usvg = { version = "0.47", default-features = false, features = ["text"] }
+unicode-ident = "1.0.24"
+unicode-math-class = "0.1.0"
+unicode-normalization = "0.1.25"
+unicode-script = "0.5.8"
+unicode-segmentation = "1.13.3"
+unscanny = "0.1.0"
+ureq = { version = "2.12.1", default-features = false, features = ["native-tls", "gzip", "json"] }
+url = "2.5.8"
+usvg = { version = "0.47.0", default-features = false, features = ["text"] }
 utf8_iter = "1.0.4"
-walkdir = "2"
-wasmi = { version = "1.0.9", default-features = false, features = ["simd"] }
-web-sys = "0.3"
+walkdir = "2.5.0"
+wasmi = { version = "1.1.0", default-features = false, features = ["simd"] }
+web-sys = "0.3.102"
 xmlwriter = "0.1.0"
-xz2 = { version = "0.1", features = ["static"] }
-zip = { version = "8", default-features = false, features = ["deflate"] }
+xz2 = { version = "0.1.7", features = ["static"] }
+zip = { version = "8.6.0", default-features = false, features = ["deflate"] }
 
 [profile.dev.package."*"]
 opt-level = 2
