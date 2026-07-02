@@ -33,18 +33,18 @@ typst-svg = { path = "crates/typst-svg", version = "0.15.0" }
 typst-syntax = { path = "crates/typst-syntax", version = "0.15.0" }
 typst-timing = { path = "crates/typst-timing", version = "0.15.0" }
 typst-utils = { path = "crates/typst-utils", version = "0.15.0" }
-typst-assets = "0.15.0"
-typst-dev-assets = { git = "https://github.com/typst/typst-dev-assets", tag = "v0.15.0" }
-arrayvec = "0.7.7"
-az = "1.3.0"
-base64 = "0.22.1"
+typst-assets = { git = "https://github.com/typst/typst-assets", rev = "74217e4" }
+typst-dev-assets = { git = "https://github.com/typst/typst-dev-assets", rev = "a2e29ed" }
+arrayvec = "0.7.4"
+az = "1.2"
+base64 = "0.22"
 bitflags = { version = "2.13.0", features = ["serde"] }
-bumpalo = { version = "3.20.3", features = ["boxed", "collections"] }
-bytemuck = "1.25.0"
-chrono = { version = "0.4.45", default-features = false, features = ["clock", "std"] }
-ciborium = "0.2.2"
-clap = { version = "4.6.1", features = ["derive", "env", "wrap_help"] }
-clap_complete = "4.6.5"
+bumpalo = { version = "3.15.4", features = ["boxed", "collections"] }
+bytemuck = "1"
+chrono = { version = "0.4.24", default-features = false, features = ["clock", "std"] }
+ciborium = "0.2.1"
+clap = { version = "4.4", features = ["derive", "env", "wrap_help"] }
+clap_complete = "4.6.7"
 clap_mangen = { version = "0.3.0", features = ["env"] }
 codespan-reporting = "0.13.1"
 codex = "0.3.0"
@@ -90,7 +90,7 @@ moxcms = "0.8.1"
 native-tls = "0.2.18"
 notify = "8.2.0"
 once_cell = "1.21.4"
-open = "5.3.5"
+open = "5.3.6"
 openssl = "0.10.81"
 oxipng = { version = "10.0.0", default-features = false, features = ["filetime", "parallel"] }
 palette = { version = "0.7.6", default-features = false, features = ["approx", "libm"] }
@@ -102,7 +102,7 @@ pixglyph = "0.6.1"
 png = "0.18.1"
 portable-atomic = "1.13.1"
 proc-macro2 = "1.0.106"
-quote = "1.0.45"
+quote = "1.0.46"
 rayon = "1.12.0"
 regex = "1.12.4"
 regex-syntax = "0.8.11"
@@ -129,7 +129,7 @@ syntect = { version = "5.3.0", default-features = false, features = ["parsing", 
 tar = "0.4.46"
 tempfile = "3.27.0"
 thin-vec = "0.2.18"
-time = { version = "0.3.49", features = ["formatting", "macros", "parsing"] }
+time = { version = "0.3.53", features = ["formatting", "macros", "parsing"] }
 tiny_http = "0.12.0"
 tiny-skia = "0.12.0"
 toml = { version = "0.9.8", default-features = false, features = ["parse", "display", "serde"] }
@@ -150,7 +150,7 @@ usvg = { version = "0.47.0", default-features = false, features = ["text"] }
 utf8_iter = "1.0.4"
 walkdir = "2.5.0"
 wasmi = { version = "1.1.0", default-features = false, features = ["simd"] }
-web-sys = "0.3.102"
+web-sys = "0.3.103"
 xmlwriter = "0.1.0"
 xz2 = { version = "0.1.7", features = ["static"] }
 zip = { version = "8.6.0", default-features = false, features = ["deflate"] }
