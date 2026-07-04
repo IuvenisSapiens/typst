@@ -1187,6 +1187,7 @@ c36949b9de20318bc36bd1822b40d20f math-lr-multiline
 ed7d216099e152c24df8e6b059dbbc89 math-lr-nested-mid
 eb26b267876181dcfb0eb46409d6e7d4 math-lr-scripts
 f796f48872aa8dfdd363f549e454c3ed math-lr-shorthands
+b61017d9e07e5ee94e2fb0041c252a53 math-lr-single-line-align
 b1bd345f3354c5e1b374ab5171aa143b math-lr-size
 7a2c791f3f1cdc5ed3d1c4e4f3dafcaa math-lr-sym-call
 a12c3c57b2b97a99f9eb5f3f6c4a6261 math-lr-sym-call-size
@@ -1234,10 +1235,13 @@ c207fa218b4845bce58a2939e1c74446 math-multiline-trailing-linebreak
 c93dc2460563802c00edda3de87e597c math-op-call
 81a06f9fc61947ea00dfff358ce5e004 math-op-custom
 67aeaec26cba2e1cfaf6e501c808c8a1 math-op-font
+4db5a32c69ecfd9a7ddb6cdb5f78e4fb math-op-large-stretch
 f1b24293e58b612a581faf2bbac932a6 math-op-predefined
 5c6845107e59a49683b74aa8a67c8db8 math-op-scripts-vs-limits
 50cf65325d067e8d1cb2eb80d1521f15 math-op-set-font
+48eaec8e2a5e7bbd9c220b3a33cd467b math-op-stretch-relative
 1fd048408eba19336d5d34e60a8d07a8 math-op-styled
+7761973d75f7d0ae949160c664ec3573 math-op-symbol-baseline
 d4c12fb9389eb5401f4ba3247b25b050 math-optical-size-frac-script-script
 689d84608a8be9f2100153aab5bdccb0 math-optical-size-nested-scripts
 4ee9ccbb557764e92ee3c600a4b6c913 math-optical-size-prime-large-operator
@@ -1256,7 +1260,7 @@ a2627a53e19cd7cb69510cb92f2a9091 math-primes-complex
 2c217d0177ac6d205a457adf174f41c1 math-primes-merge-inner-prime
 fab15d7cfeb7e8b6eda1b529a1bded3c math-primes-merge-top
 c22f982da5a90bec00b2fce906aed264 math-primes-merge-top-nested
-e0acf40366d132adf89a158b1b75f825 math-primes-scripts
+31b8673c680b33c3ca60968d91e7e8ea math-primes-scripts
 52d0ec212d30aeaf1e9b40059e8e8c63 math-primes-show-rule
 487024a8c83624aa7bf793bc2d29d75c math-primes-show-rules
 f37c155b77084e8e8a724c99c1fd6fd4 math-primes-spaces
@@ -1553,6 +1557,7 @@ e7e088c58f14dea7b7b61f53828b9a34 raw-empty
 0699bb31b5321ebf3ba3a762aee5c5bd raw-highlight-py
 b2912678dde1faa17644b690888aac2d raw-highlight-rust
 e9f30f8fd86c4ef0c485da402d80c1ad raw-highlight-typ
+6b69640379e8510ce7eeac2ccf736636 raw-highlight-typ-invalid-ints
 86e277f332abfe98969446179388de87 raw-highlight-typc
 d52c89959deb7b9ff9832af365ff1e79 raw-highlight-typm
 108b6b887dcdb403d2e8638701cf23e3 raw-highlight-typm-idents
