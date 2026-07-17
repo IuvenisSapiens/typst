@@ -394,6 +394,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "chinese-number"
+version = "0.8.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ebf71742cbaf8a8cdb5b614d337cc3c643a488b98eba1301414b60e2b5cae512"
+dependencies = [
+ "chinese-variant",
+ "enum-ordinalize",
+ "num-bigint",
+ "num-traits",
+]
+
+[[package]]
 name = "chinese-variant"
 version = "1.1.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -540,7 +552,7 @@ version = "0.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0732ab1a27b4ea05e6f9f60a5122c9924dd5123defde0d8e907f58cf643d40e6"
 dependencies = [
- "chinese-number",
+ "chinese-number 0.7.8",
 ]
 
 [[package]]
@@ -1759,9 +1771,9 @@ dependencies = [
 
 [[package]]
 name = "infer"
-version = "0.19.0"
+version = "0.22.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a588916bfdfd92e71cacef98a63d9b1f0d74d6599980d11894290e7ddefffcf7"
+checksum = "f4200d433cbd5178df7797c9c2e75b348b728e39631cf14520d1e2fc424201f4"
 
 [[package]]
 name = "inotify"
@@ -1915,11 +1927,11 @@ dependencies = [
 [[package]]
 name = "kokoro-tts"
 version = "0.3.3"
-source = "git+https://github.com/IuvenisSapiens/kokoro.git?branch=feat_json#4e5bfaabec07aa11a46b0f6117fd39d0c2f48807"
+source = "git+https://github.com/IuvenisSapiens/kokoro.git?branch=feat_json#aa8ed5f5ab25b6d83429595a3370dd552f2db4aa"
 dependencies = [
  "bincode 2.0.1",
  "cc",
- "chinese-number",
+ "chinese-number 0.8.2",
  "futures",
  "jieba-rs",
  "log",
