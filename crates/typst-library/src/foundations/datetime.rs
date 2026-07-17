@@ -382,6 +382,28 @@ impl Datetime {
         Ok(engine.world.today(offset).ok_or("unable to get the current date")?)
     }
 
+    /// Returns the current time.
+    ///
+    /// ```example
+    /// The current time is
+    /// #datetime.now().display().
+    /// ```
+    #[func]
+    pub fn now(
+        engine: &mut Engine,
+        /// An offset to apply to the current UTC time. If set to `{auto}`, the
+        /// offset will be the local offset.
+        ///
+        /// When an integer offset is given, it will be treated as a duration in
+        /// hours.
+        #[named]
+        #[default]
+        offset: Smart<TodayOffset>,
+    ) -> StrResult<Datetime> {
+        let offset = offset.custom().map(|v| v.0);
+        Ok(engine.world.now(offset).ok_or("unable to get the current time")?)
+    }
+
     /// Displays the datetime in a specified format.
     ///
     /// Depending on whether you have defined just a date, a time or both, the

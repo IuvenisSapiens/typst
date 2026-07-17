@@ -7,7 +7,7 @@
 
 use std::sync::OnceLock;
 
-use chrono::{DateTime, Datelike, FixedOffset, Local, NaiveTime, Utc};
+use chrono::{DateTime, Datelike, FixedOffset, Local, NaiveTime, Timelike, Utc};
 use chrono::{NaiveDate, NaiveDateTime};
 
 use typst_library::diag::{StrResult, bail};
@@ -116,6 +116,54 @@ impl Time {
             with_offset.day().try_into().ok()?,
         )
     }
+
+    /// The current time.
+    ///
+    /// A timezone offset can be given to obtain the current time in this
+    /// timezone.
+    ///
+    /// This can directly be used to implement
+    /// [`World::now`](typst_library::World::now).
+    pub fn now(&self, offset: Option<Duration>) -> Option<Datetime> {
+        let now = match &self.0 {
+            TimeInner::Fixed(time) => time.fixed_offset(),
+            TimeInner::System(time) => {
+                let now_utc = time.get_or_init(Utc::now);
+                if offset.is_some() {
+                    // Actual offset will be applied later.
+                    now_utc.fixed_offset()
+                } else {
+                    now_utc.with_timezone(&Local).fixed_offset()
+                }
+            }
+        };
+
+        // The time with the specified UTC offset.
+        let with_offset = match offset {
+            None => now,
+            Some(offset) => {
+                let seconds = offset.seconds().trunc();
+                // Check whether we can convert seconds from f64 to i32
+                if !seconds.is_finite()
+                    || seconds < f64::from(i32::MIN)
+                    || seconds > f64::from(i32::MAX)
+                {
+                    return None;
+                }
+                now.with_timezone(&FixedOffset::east_opt(seconds as i32)?)
+            }
+        };
+
+        Datetime::from_ymd_hms(
+            with_offset.year(),
+            with_offset.month().try_into().ok()?,
+            with_offset.day().try_into().ok()?,
+            with_offset.hour().try_into().ok()?,
+            with_offset.minute().try_into().ok()?,
+            with_offset.second().try_into().ok()?,
+        )
+    }
+
 
     /// If not a fixed time, resets the memoized time fetched from the system.
     ///
