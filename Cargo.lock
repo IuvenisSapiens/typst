@@ -137,6 +137,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "72b3254f16251a8381aa12e40e3c4d2f0199f8c6508fbecb9d91f575e0fbb8c6"
 
 [[package]]
+name = "base64"
+version = "0.23.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b25655df2c3cdd83c5e5b293b88acd880332b2ddadd7c30ac43144fdc0033da9"
+
+[[package]]
 name = "biblatex"
 version = "0.12.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1032,7 +1038,7 @@ dependencies = [
  "hayro-cmap",
  "hayro-syntax",
  "kurbo",
- "moxcms",
+ "moxcms 0.8.1",
  "phf 0.13.1",
  "rustc-hash",
  "siphasher",
@@ -1072,7 +1078,7 @@ version = "0.7.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7434c89e920d84e077214a29e69b462a6518754610f732f1124af3948410cb8c"
 dependencies = [
- "base64",
+ "base64 0.22.1",
  "hayro-interpret",
  "image",
  "kurbo",
@@ -1355,7 +1361,7 @@ dependencies = [
  "color_quant",
  "gif",
  "image-webp",
- "moxcms",
+ "moxcms 0.8.1",
  "num-traits",
  "png",
  "zune-core",
@@ -1504,7 +1510,7 @@ version = "0.8.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "27da593198b20eeba65caeb73c2bbeec3e53ab08fa549898312ce81c4fce5e33"
 dependencies = [
- "base64",
+ "base64 0.22.1",
  "bumpalo",
  "comemo",
  "flate2",
@@ -1717,6 +1723,16 @@ name = "moxcms"
 version = "0.8.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "bb85c154ba489f01b25c0d36ae69a87e4a1c73a72631fc6c0eb6dde34a73e44b"
+dependencies = [
+ "num-traits",
+ "pxfm",
+]
+
+[[package]]
+name = "moxcms"
+version = "0.9.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "aee701c0ffba6cc991c0fefda5ff5fca1bd2f2f4a928ffba9f825b9afceedbc3"
 dependencies = [
  "num-traits",
  "pxfm",
@@ -2179,7 +2195,7 @@ version = "1.10.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7da1d65da6dd5d1e44199ac0f58712d241c0f439f80adea8924d832384087f85"
 dependencies = [
- "base64",
+ "base64 0.22.1",
  "indexmap",
  "quick-xml 0.41.0",
  "serde",
@@ -3249,14 +3265,14 @@ dependencies = [
 [[package]]
 name = "typst-dev-assets"
 version = "0.15.1"
-source = "git+https://github.com/typst/typst-dev-assets?rev=79ba7c3#79ba7c354e39d9cd0a074bc41becc05f0119eee3"
+source = "git+https://github.com/typst/typst-dev-assets?rev=5a10d90#5a10d90b044e030d793e700c7c5052759621ae38"
 
 [[package]]
 name = "typst-docs"
 version = "0.15.1"
 dependencies = [
  "az",
- "base64",
+ "base64 0.23.0",
  "clap",
  "comemo",
  "ecow",
@@ -3461,7 +3477,7 @@ dependencies = [
  "libm",
  "lipsum",
  "memchr",
- "moxcms",
+ "moxcms 0.9.0",
  "palette",
  "percent-encoding",
  "phf 0.14.0",
@@ -3579,7 +3595,7 @@ dependencies = [
 name = "typst-svg"
 version = "0.15.1"
 dependencies = [
- "base64",
+ "base64 0.23.0",
  "comemo",
  "ecow",
  "flate2",
@@ -3621,7 +3637,7 @@ dependencies = [
 name = "typst-tests"
 version = "0.15.1"
 dependencies = [
- "base64",
+ "base64 0.23.0",
  "bitflags",
  "clap",
  "comemo",
@@ -3838,7 +3854,7 @@ version = "2.12.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "02d1a66277ed75f640d608235660df48c8e3c19f3b4edb6a263315626cc3c01d"
 dependencies = [
- "base64",
+ "base64 0.22.1",
  "flate2",
  "log",
  "native-tls",
@@ -3867,7 +3883,7 @@ version = "0.47.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d46cf96c5f498d36b7a9693bc6a7075c0bb9303189d61b2249b0dc3d309c07de"
 dependencies = [
- "base64",
+ "base64 0.22.1",
  "data-url",
  "flate2",
  "fontdb",
