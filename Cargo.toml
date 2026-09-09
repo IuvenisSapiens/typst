@@ -52,7 +52,7 @@ color-print = "0.3.7"
 comemo = "0.5.1"
 csv = "1.4.0"
 ctrlc = "3.5.2"
-dirs = "6.0.0"
+dirs = "7.0.0"
 ecow = { version = "0.3.0", features = ["serde"] }
 either = "1.17.0"
 env_proxy = "0.4.1"
@@ -133,11 +133,11 @@ thin-vec = "0.2.19"
 time = { version = "0.3.54", features = ["formatting", "macros", "parsing"] }
 tiny_http = "0.12.0"
 tiny-skia = "0.12.0"
-toml = { version = "1.1.4", default-features = false, features = ["parse", "display", "serde"] }
+toml = { version = "1.1.5", default-features = false, features = ["parse", "display", "serde"] }
 ttf-parser = "0.25.1"
 two-face = { version = "0.5.1", default-features = false, features = ["syntect-fancy"] }
 typed-arena = "2.0.2"
-unicode_names2 = "3.1.0"
+unicode_names2 = "4.0.0"
 unicode-bidi = "0.3.18"
 unicode-ident = "1.0.24"
 unicode-math-class = "0.1.0"
@@ -150,7 +150,7 @@ url = "2.5.8"
 usvg = { version = "0.47.0", default-features = false, features = ["text"] }
 utf8_iter = "1.0.4"
 walkdir = "2.5.0"
-wasmi = { version = "1.1.0", default-features = false, features = ["simd"] }
+wasmi = { version = "2.0.0", default-features = false, features = ["simd", "validate"] }
 web-sys = "0.3.103"
 xmlwriter = "0.1.0"
 xz2 = { version = "0.1.7", features = ["static"] }
