@@ -37,15 +37,15 @@ typst-assets = { git = "https://github.com/typst/typst-assets", rev = "94dcb99" 
 typst-dev-assets = { git = "https://github.com/typst/typst-dev-assets", rev = "0e7c92e" }
 arrayvec = "0.7.8"
 az = "1.3.0"
-base64 = "0.23.0"
-bitflags = { version = "2.13.1", features = ["serde"] }
+base64 = "0.23.1"
+bitflags = { version = "2.13.2", features = ["serde"] }
 bumpalo = { version = "3.20.3", features = ["boxed", "collections"] }
 bytemuck = "1.25.2"
 chrono = { version = "0.4.45", default-features = false, features = ["clock", "std"] }
 ciborium = "0.2.2"
-clap = { version = "4.6.4", features = ["derive", "env", "wrap_help"] }
-clap_complete = "4.6.8"
-clap_mangen = { version = "0.3.0", features = ["env"] }
+clap = { version = "4.6.7", features = ["derive", "env", "wrap_help"] }
+clap_complete = "4.6.11"
+clap_mangen = { version = "0.3.3", features = ["env"] }
 codespan-reporting = "0.13.1"
 codex = "0.3.0"
 color-print = "0.3.7"
@@ -53,11 +53,11 @@ comemo = "0.5.1"
 csv = "1.4.0"
 ctrlc = "3.5.2"
 dirs = "7.0.0"
-ecow = { version = "0.3.0", features = ["serde"] }
-either = "1.17.0"
+ecow = { version = "0.3.1", features = ["serde"] }
+either = "1.18.0"
 env_proxy = "0.4.1"
 fastrand = "2.5.0"
-flate2 = { version = "1.1.9", features = ["zlib-rs"] }
+flate2 = { version = "1.1.10", features = ["zlib-rs"] }
 fontdb = { version = "0.23.0", default-features = false }
 fs_extra = "1.3.0"
 glidesort = "0.1.2"
@@ -73,7 +73,7 @@ icu_provider = { version = "2.3.1", features = ["sync"] }
 icu_provider_blob = "2.3.0"
 icu_segmenter = { version = "2.3.0", features = ["serde"] }
 image = { version = "0.25.10", default-features = false, features = ["png", "jpeg", "gif", "webp"] }
-indexmap = { version = "2.14.0", features = ["serde", "rayon"] }
+indexmap = { version = "2.14.2", features = ["serde", "rayon"] }
 infer = { version = "0.22.0", default-features = false }
 itoa = "1.0.18"
 kamadak-exif = "0.6.1"
@@ -84,21 +84,21 @@ libfuzzer-sys = "0.4.13"
 libm = "0.2.16"
 lipsum = "0.9.1"
 memchr = "2.8.3"
-moxcms = "0.9.0"
+moxcms = "0.9.1"
 native-tls = "0.2.18"
 notify = "8.2.0"
 once_cell = "1.21.4"
-open = "5.4.0"
+open = "5.4.4"
 openssl = "0.10.81"
-oxipng = { version = "10.0.0", default-features = false, features = ["filetime", "parallel"] }
-palette = { version = "0.7.6", default-features = false, features = ["approx", "libm"] }
+oxipng = { version = "10.2.1", default-features = false, features = ["parallel"] }
+palette = { version = "0.7.7", default-features = false, features = ["approx", "libm"] }
 parking_lot = "0.12.5"
 pathdiff = "0.2.3"
 percent-encoding = "2.3.2"
 phf = { version = "0.14.0", features = ["macros"] }
 pixglyph = "0.6.1"
 png = "0.18.1"
-portable-atomic = "1.14.0"
+portable-atomic = "1.15.0"
 proc-macro2 = "1.0.107"
 quote = "1.0.47"
 rayon = "1.12.0"
@@ -106,7 +106,7 @@ regex = "1.13.1"
 regex-syntax = "0.8.11"
 resvg = { version = "0.47.0", default-features = false, features = ["raster-images"] }
 roxmltree = "0.21.1"
-rust_decimal = { version = "1.42.1", default-features = false, features = ["maths"] }
+rust_decimal = { version = "1.43.0", default-features = false, features = ["maths"] }
 rustc-hash = "2.1.3"
 rustybuzz = "0.20.1"
 ryu = "1.0.23"
@@ -118,10 +118,10 @@ serde_json = "1.0.151"
 serde_yaml = "0.9.34"
 shell-escape = "0.1.5"
 sigpipe = "0.1.3"
-similar = { version = "3.1.1", features = ["inline", "unicode"] }
+similar = { version = "3.2.0", features = ["inline", "unicode"] }
 siphasher = "1.0.3"
-smallvec = { version = "1.15.2", features = ["union", "const_generics", "const_new"] }
-stacker = "0.1.24"
+smallvec = { version = "1.16.1", features = ["union", "const_generics", "const_new"] }
+stacker = "0.1.25"
 syn = { version = "2.0.119", features = ["full", "extra-traits"] }
 syntect = { version = "5.3.0", default-features = false, features = ["parsing", "regex-fancy", "plist-load", "yaml-load"] }
 tar = "0.4.46"
@@ -130,7 +130,7 @@ thin-vec = "0.2.19"
 time = { version = "0.3.55", features = ["formatting", "macros", "parsing"] }
 tiny_http = "0.12.0"
 tiny-skia = "0.12.0"
-toml = { version = "1.1.5", default-features = false, features = ["parse", "display", "serde"] }
+toml = { version = "1.1.6", default-features = false, features = ["parse", "display", "serde"] }
 ttf-parser = "0.25.1"
 two-face = { version = "0.5.2", default-features = false, features = ["syntect-fancy"] }
 typed-arena = "2.0.2"
@@ -148,7 +148,7 @@ usvg = { version = "0.47.0", default-features = false, features = ["text"] }
 utf8_iter = "1.0.4"
 walkdir = "2.5.0"
 wasmi = { version = "2.0.0", default-features = false, features = ["simd", "validate"] }
-web-sys = "0.3.103"
+web-sys = "0.3.105"
 xmlwriter = "0.1.0"
 xz2 = { version = "0.1.7", features = ["static"] }
 zip = { version = "8.6.0", default-features = false, features = ["deflate"] }
