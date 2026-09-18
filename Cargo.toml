@@ -45,6 +45,7 @@ chrono = { version = "0.4.45", default-features = false, features = ["clock", "s
 ciborium = "0.2.2"
 clap = { version = "4.6.7", features = ["derive", "env", "wrap_help"] }
 clap_complete = "4.6.11"
+clap_complete_nushell = "4.6.2"
 clap_mangen = { version = "0.3.3", features = ["env"] }
 codespan-reporting = "0.13.1"
 codex = "0.3.0"
