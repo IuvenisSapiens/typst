@@ -553,10 +553,10 @@ dependencies = [
 [[package]]
 name = "codex"
 version = "0.3.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0732ab1a27b4ea05e6f9f60a5122c9924dd5123defde0d8e907f58cf643d40e6"
+source = "git+https://github.com/typst/codex?rev=2e43ab9#2e43ab90079cf9f9fa670d421c8c38233143b376"
 dependencies = [
  "chinese-number 0.7.8",
+ "icu_properties",
 ]
 
 [[package]]
@@ -4494,7 +4494,7 @@ dependencies = [
 [[package]]
 name = "typst-dev-assets"
 version = "0.15.1"
-source = "git+https://github.com/typst/typst-dev-assets?rev=0e7c92e#0e7c92e9ede7621b1a705af014f706d91bb93bc8"
+source = "git+https://github.com/typst/typst-dev-assets?rev=e26d7ca#e26d7ca70f956ef3e8b329d3d766168ad0b006a5"
 
 [[package]]
 name = "typst-docs"
@@ -4797,6 +4797,7 @@ version = "0.15.1"
 dependencies = [
  "arrayvec",
  "bumpalo",
+ "codex",
  "comemo",
  "ecow",
  "regex",
