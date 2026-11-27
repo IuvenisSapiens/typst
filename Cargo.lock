@@ -2715,7 +2715,7 @@ checksum = "04744f49eae99ab78e0d5c0b603ab218f515ea8cfe5a456d7629ad883a3b6e7d"
 [[package]]
 name = "ort"
 version = "2.0.0-rc.15"
-source = "git+https://github.com/pykeio/ort?branch=main#e6bfe1261a31bdfef0b4c53a2e956f7b4d0b4ae4"
+source = "git+https://github.com/pykeio/ort?branch=main#43a7ee4aac89681b652f05d0771b9e8ab142cf70"
 dependencies = [
  "ndarray",
  "ort-sys",
@@ -2726,7 +2726,7 @@ dependencies = [
 [[package]]
 name = "ort-sys"
 version = "2.0.0-rc.15"
-source = "git+https://github.com/pykeio/ort?branch=main#e6bfe1261a31bdfef0b4c53a2e956f7b4d0b4ae4"
+source = "git+https://github.com/pykeio/ort?branch=main#43a7ee4aac89681b652f05d0771b9e8ab142cf70"
 dependencies = [
  "hmac-sha256",
  "lzma-rust2",
