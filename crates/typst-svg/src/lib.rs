@@ -366,7 +366,7 @@ impl<'a> SVGRenderer<'a> {
 
         if let Some(clip_curve) = &group.clip {
             let id = self.clip_paths.insert_with((clip_curve, state.transform), || {
-                (shape::convert_curve(Point::zero(), clip_curve), state.transform)
+                (shape::convert_curve(clip_curve), state.transform)
             });
             svg.init().attr("clip-path", SvgUrl(id));
         }
@@ -556,7 +556,7 @@ impl SvgDisplay for DedupId {
         }
 
         // The digits are all valid ASCII hex characters.
-        let str = std::str::from_utf8(&digits).unwrap();
+        let str = str::from_utf8(&digits).unwrap();
         f.push_str(str.trim_start_matches('0'));
 
         fn to_hex_digit(nibble: u8) -> u8 {
