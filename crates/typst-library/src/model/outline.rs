@@ -20,8 +20,7 @@ use crate::layout::{
     Abs, Axes, BlockBody, BlockElem, BoxElem, Dir, Em, Fr, HElem, Length, Region, Rel,
     RepeatElem, Sides,
 };
-use crate::model::PdfMarkerTag;
-use crate::model::{HeadingElem, NumberingPattern, ParElem, Refable};
+use crate::model::{HeadingElem, NumberingPattern, ParElem, PdfMarkerTag, Refable};
 use crate::text::{LocalName, SpaceElem, TextElem};
 
 /// A table of contents, figures, or other elements.
@@ -168,6 +167,9 @@ pub struct OutlineElem {
     /// selector. See the section on
     /// @outline:alternative-outlines[alternative outlines] for more details.
     ///
+    /// Note that not all elements can be outlined: The only outlinable elements
+    /// are @math.equation, @figure, and @heading.
+    ///
     /// ```example
     /// #outline(
     ///   title: [List of Tables],
@@ -177,8 +179,8 @@ pub struct OutlineElem {
     /// #figure(
     ///   table(
     ///     columns: 4,
-    ///     [t], [1], [2], [3],
-    ///     [y], [0.3], [0.7], [0.5],
+    ///     $t$, [1], [2], [3],
+    ///     $y$, [0.3], [0.7], [0.5],
     ///   ),
     ///   caption: [Experiment results],
     /// )
